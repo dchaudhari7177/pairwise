@@ -11,11 +11,9 @@ export const metadata: Metadata = { title: "Conversation" };
 export default async function ChatPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { store, user } = await requireMember();
-  try {
-    const convo = await getConversation(store, user, id);
-    return <ChatRoom initial={convo} venues={venuesFor(user.profile!.city)} templates={KIND_CLOSE_TEMPLATES} />;
-  } catch (e) {
+  const convo = await getConversation(store, user, id).catch((e) => {
     if (e instanceof AppError && e.status === 404) notFound();
     throw e;
-  }
+  });
+  return <ChatRoom initial={convo} venues={venuesFor(user.profile!.city)} templates={KIND_CLOSE_TEMPLATES} />;
 }

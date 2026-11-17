@@ -35,7 +35,7 @@ export function SignupForm() {
     }
   }
 
-  const maxDob = new Date(Date.now() - 18 * 365.25 * 86400000).toISOString().slice(0, 10);
+  const [maxDob] = useState(() => new Date(Date.now() - 18 * 365.25 * 86400000).toISOString().slice(0, 10));
 
   return (
     <form onSubmit={submit} className="mt-6 space-y-4">

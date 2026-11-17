@@ -68,7 +68,7 @@ export function ProfileView({
         {reasons && reasons.length > 0 && (
           <div className="rounded-2xl border border-rose/15 bg-rose-soft/60 p-4">
             <p className="eyebrow flex items-center gap-1.5 text-rose-2">
-              <Sparkles className="h-3.5 w-3.5" /> Why you're seeing {card.firstName}
+              <Sparkles className="h-3.5 w-3.5" /> Why you&apos;re seeing {card.firstName}
             </p>
             <ul className="mt-2 space-y-1 text-sm text-ink-2">
               {reasons.map((r) => (

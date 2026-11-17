@@ -52,7 +52,9 @@ export function PlusPanel({
           <p className="mt-1 text-ink-2">
             {cancelAt
               ? `Cancelled. Plus stays active until ${new Date(cancelAt).toLocaleDateString("en-IN", { day: "numeric", month: "long" })}, and you won't be charged again.`
-              : `Renews on ${new Date(renewsAt ?? Date.now()).toLocaleDateString("en-IN", { day: "numeric", month: "long" })}.`}
+              : renewsAt
+                ? `Renews on ${new Date(renewsAt).toLocaleDateString("en-IN", { day: "numeric", month: "long" })}.`
+                : "Active."}
           </p>
           {!cancelAt && (
             <button className="btn btn-ghost btn-sm mt-4" disabled={busy} onClick={() => run(() => api("/api/plus/cancel", { body: {} }))}>

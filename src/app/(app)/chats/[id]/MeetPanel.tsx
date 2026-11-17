@@ -44,7 +44,8 @@ export function MeetPanel({ convo, venues, onChange }: { convo: Conversation; ve
   }
 
   const bothReady = convo.meetReady.me && convo.meetReady.them;
-  const past = plan?.status === "accepted" && plan.at < Date.now();
+  const [now] = useState(() => Date.now());
+  const past = plan?.status === "accepted" && plan.at < now;
 
   return (
     <div className="space-y-4">
