@@ -121,7 +121,7 @@ export interface SparkView {
 }
 
 export interface Conversation {
-  match: Pick<Match, "id" | "status" | "createdAt" | "closeReason" | "meetReady"> & { closedByMe: boolean };
+  match: Pick<Match, "id" | "status" | "createdAt" | "closeReason"> & { closedByMe: boolean };
   other: ProfileCard;
   messages: ChatMessage[];
   spark: SparkView | null;
@@ -168,13 +168,14 @@ export async function getConversation(store: DocStore, viewer: User, matchId: st
   if (m.unread?.[viewer.id]) await store.update("matches", m.id, { [`unread.${viewer.id}`]: 0 });
   const last = m.lastMessageAt ?? m.createdAt;
   return {
-    match: { id: m.id, status: m.status, createdAt: m.createdAt, closeReason: m.closeReason, meetReady: m.meetReady, closedByMe: m.closedBy === viewer.id },
+    match: { id: m.id, status: m.status, createdAt: m.createdAt, closeReason: m.closeReason, closedByMe: m.closedBy === viewer.id },
     other: toCard(o, { matched: true, now }),
     messages,
     spark: sparkView(m, viewer.id),
     datePlan: m.datePlan ? { ...m.datePlan, venue: getVenue(m.datePlan.venueId), proposedByMe: m.datePlan.proposedBy === viewer.id } : null,
     myCheckin: m.checkins?.[viewer.id] ?? null,
-    meetReady: { me: !!m.meetReady?.[viewer.id], them: !!m.meetReady?.[otherId] },
+    // The other person's readiness is only revealed once you are ready too: no pressure, no awkward "no".
+    meetReady: { me: !!m.meetReady?.[viewer.id], them: !!m.meetReady?.[viewer.id] && !!m.meetReady?.[otherId] },
     expiresInHours: Math.max(0, Math.round((last + LIMITS.expiryDays * DAY - now) / HOUR)),
   };
 }
