@@ -1,4 +1,4 @@
-import { Home, Languages, MapPin, Ruler, Sparkles } from "lucide-react";
+import { Baby, Briefcase, Cigarette, GraduationCap, Heart, Home, Languages, MapPin, Plane, Ruler, Sparkles, Users, Utensils, Wine } from "lucide-react";
 import { CITIES, HABIT_LABELS, INTENTS, LIFE_PLAN_LABELS } from "@/lib/options";
 import type { ProfileCard } from "@/lib/services/profiles";
 import { Badges, VerifiedTick } from "./Badges";
@@ -14,143 +14,204 @@ export function ProfileHeadline({ card }: { card: ProfileCard }) {
         {card.role}
         {card.employer ? ` at ${card.employer}` : ""}
       </p>
-      <p className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
-        <span className="inline-flex items-center gap-1">
-          <MapPin className="h-3.5 w-3.5" />
-          {card.area ? `${card.area}, ` : ""}
-          {CITIES[card.city].label}
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <Home className="h-3.5 w-3.5" /> From {card.hometown}
-        </span>
-      </p>
     </div>
   );
 }
 
+/** The photo card: portrait full-bleed, name and essentials over a soft scrim. */
+export function HeroCard({
+  card,
+  score,
+  likedYou,
+  className = "",
+}: {
+  card: ProfileCard;
+  score?: number;
+  likedYou?: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={`relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] shadow-lift ${className}`}>
+      <Portrait seed={card.avatarSeed} name={card.firstName} gender={card.gender} photo={card.photo} rounded="rounded-[2rem]" className="absolute inset-0 h-full w-full" />
+      <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4">
+        {likedYou ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-love px-3 py-1.5 text-xs font-bold text-white shadow-lg">
+            <Heart className="h-3.5 w-3.5 fill-current" /> Liked you
+          </span>
+        ) : (
+          <span />
+        )}
+        {score !== undefined && (
+          <span className="glass inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-ink shadow">
+            <Sparkles className="h-3.5 w-3.5 text-rose" /> {score}% match
+          </span>
+        )}
+      </div>
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1b1015]/85 via-[#1b1015]/50 via-55% to-transparent px-5 pb-5 pt-20 text-white">
+        <p className="flex items-center gap-2 font-display text-[2rem] font-semibold leading-none tracking-tight">
+          {card.firstName}
+          <span className="font-normal opacity-90">{card.age}</span>
+          {card.badges.identity && (
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-white">
+              <VerifiedTick className="text-[1.15rem]" />
+            </span>
+          )}
+        </p>
+        <p className="mt-2 flex items-center gap-1.5 text-sm text-white/90">
+          <Briefcase className="h-3.5 w-3.5 shrink-0" />
+          <span className="truncate">
+            {card.role}
+            {card.employer ? ` · ${card.employer}` : ""}
+          </span>
+        </p>
+        <p className="mt-1 flex items-center gap-1.5 text-sm text-white/90">
+          <MapPin className="h-3.5 w-3.5 shrink-0" />
+          <span className="truncate">
+            {card.area ? `${card.area}, ` : ""}
+            {CITIES[card.city].label} · from {card.hometown}
+          </span>
+        </p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          <span className="rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold backdrop-blur-sm">{INTENTS[card.intent].label}</span>
+          {card.plus && <span className="rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold backdrop-blur-sm">✦ Plus</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PromptCard({ q, a, action }: { q: string; a: string; action?: React.ReactNode }) {
+  return (
+    <div className="card relative overflow-hidden p-6 pb-7">
+      <p className="text-[0.8rem] font-semibold text-muted">{q}</p>
+      <p className={`mt-2 font-display text-[1.45rem] leading-snug tracking-tight ${action ? "pr-12" : ""}`}>{a}</p>
+      {action && <div className="absolute bottom-4 right-4">{action}</div>}
+    </div>
+  );
+}
+
+function Fact({ icon: Icon, children }: { icon: typeof Ruler; children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1.5 text-sm text-ink-2">
+      <Icon className="h-4 w-4 shrink-0 text-muted" /> {children}
+    </span>
+  );
+}
+
 /**
- * A full profile, read top to bottom like a short story rather than swiped
- * past in a second. `shared` highlights what the viewer has in common.
- * `onPrompt` renders an action next to each prompt (used for "like this answer").
+ * A full profile, read like a short story rather than swiped past. On wide
+ * screens the photo card stays pinned on the left while the story scrolls.
  */
 export function ProfileView({
   card,
   shared,
   reasons,
+  score,
+  likedYou,
   promptAction,
   hidePortrait = false,
 }: {
   card: ProfileCard;
   shared?: { values: Set<string>; interests: Set<string> };
   reasons?: string[];
+  score?: number;
+  likedYou?: boolean;
   promptAction?: (index: number) => React.ReactNode;
   hidePortrait?: boolean;
 }) {
   const lp = card.lifePlan;
+  const [p1, p2, p3] = card.prompts;
   return (
-    <article
-      className={hidePortrait ? "" : "grid gap-6 sm:grid-cols-[minmax(0,15rem)_1fr] lg:grid-cols-[minmax(0,17rem)_1fr] sm:items-start"}
-    >
+    <article className={hidePortrait ? "" : "grid gap-5 lg:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] lg:items-start lg:gap-8"}>
       {!hidePortrait && (
-        <div className="sm:sticky sm:top-6">
-          <Portrait
-            seed={card.avatarSeed}
-            name={card.firstName}
-            photo={card.photo}
-            className="mx-auto aspect-[4/5] w-full max-w-xs sm:max-w-none"
-          />
+        <div className="mx-auto w-full max-w-md lg:sticky lg:top-6">
+          <HeroCard card={card} score={score} likedYou={likedYou} />
         </div>
       )}
-      <div className="min-w-0 space-y-5">
-        <ProfileHeadline card={card} />
-        <Badges card={card} />
-
+      <div className="min-w-0 space-y-4">
         {reasons && reasons.length > 0 && (
-          <div className="rounded-2xl border border-rose/15 bg-rose-soft/60 p-4">
+          <div className="rounded-[1.5rem] bg-gradient-to-br from-rose-soft to-[#fbe9df] p-5">
             <p className="eyebrow flex items-center gap-1.5 text-rose-2">
               <Sparkles className="h-3.5 w-3.5" /> Why you&apos;re seeing {card.firstName}
             </p>
-            <ul className="mt-2 space-y-1 text-sm text-ink-2">
+            <ul className="mt-3 space-y-2 text-[0.95rem] text-ink-2">
               {reasons.map((r) => (
-                <li key={r}>• {r}</li>
+                <li key={r} className="flex gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-rose" />
+                  {r}
+                </li>
               ))}
             </ul>
           </div>
         )}
 
-        <div className="rounded-2xl bg-paper-2/70 px-4 py-3 text-sm">
-          <span className="font-semibold">{INTENTS[card.intent].label}.</span>{" "}
-          <span className="text-ink-2">{INTENTS[card.intent].blurb}</span>
+        {p1 && <PromptCard q={p1.q} a={p1.a} action={promptAction?.(0)} />}
+
+        <div className="card space-y-4 p-5">
+          <Badges card={card} />
+          {card.bio && <p className="leading-relaxed text-ink-2">{card.bio}</p>}
+          <div className="flex flex-wrap gap-2">
+            {card.heightCm && <Fact icon={Ruler}>{card.heightCm} cm</Fact>}
+            <Fact icon={Home}>{card.hometown}</Fact>
+            <Fact icon={Languages}>{card.languages.join(", ")}</Fact>
+            <Fact icon={Utensils}>{HABIT_LABELS.diet.options[card.habits.diet]}</Fact>
+            <Fact icon={Wine}>Drinks {HABIT_LABELS.drinks.options[card.habits.drinks].toLowerCase()}</Fact>
+            <Fact icon={Cigarette}>{card.habits.smokes === "never" ? "Doesn't smoke" : `Smokes ${HABIT_LABELS.smokes.options[card.habits.smokes].toLowerCase()}`}</Fact>
+            {card.college && (
+              <Fact icon={GraduationCap}>
+                {card.college}
+                {card.gradYear ? ` '${String(card.gradYear).slice(2)}` : ""}
+              </Fact>
+            )}
+            {card.faith && <Fact icon={Sparkles}>{card.faith}</Fact>}
+          </div>
         </div>
 
-        {card.prompts.map((p, i) => (
-          <div key={p.q} className="card relative p-5">
-            <p className="text-xs font-semibold text-muted">{p.q}</p>
-            <p className="mt-2 font-display text-xl leading-snug">{p.a}</p>
-            {promptAction && <div className="mt-3">{promptAction(i)}</div>}
-          </div>
-        ))}
+        {p2 && <PromptCard q={p2.q} a={p2.a} action={promptAction?.(1)} />}
 
-        {card.bio && (
-          <div>
-            <p className="eyebrow">About</p>
-            <p className="mt-2 leading-relaxed text-ink-2">{card.bio}</p>
-          </div>
-        )}
-
-        <div>
+        <div className="card p-5">
           <p className="eyebrow">Values</p>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
             {card.values.map((v) => (
               <span key={v} className={`chip ${shared?.values.has(v) ? "chip-shared" : ""}`}>
+                {shared?.values.has(v) && "♥ "}
                 {v}
               </span>
             ))}
           </div>
-        </div>
-        <div>
-          <p className="eyebrow">Into</p>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <p className="eyebrow mt-5">Into</p>
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
             {card.interests.map((v) => (
               <span key={v} className={`chip ${shared?.interests.has(v) ? "chip-shared" : ""}`}>
+                {shared?.interests.has(v) && "♥ "}
                 {v}
               </span>
             ))}
           </div>
         </div>
 
-        <div>
+        <div className="card p-5">
           <p className="eyebrow">Life plan</p>
-          <dl className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {(Object.keys(LIFE_PLAN_LABELS) as (keyof typeof LIFE_PLAN_LABELS)[]).map((k) => (
-              <div key={k} className="rounded-xl border border-line bg-card px-3 py-2">
-                <dt className="text-[0.72rem] text-muted">{LIFE_PLAN_LABELS[k].question}</dt>
-                <dd className="text-sm font-medium">{(LIFE_PLAN_LABELS[k].options as Record<string, string>)[lp[k]]}</dd>
+          <dl className="mt-3 grid grid-cols-2 gap-2.5">
+            {(
+              [
+                ["relocate", Plane],
+                ["timeline", Heart],
+                ["kids", Baby],
+                ["family", Users],
+              ] as const
+            ).map(([k, Icon]) => (
+              <div key={k} className="rounded-2xl bg-paper-2/70 p-3">
+                <dt className="flex items-start gap-1.5 text-[0.72rem] leading-tight text-muted">
+                  <Icon className="h-3.5 w-3.5 shrink-0" /> {LIFE_PLAN_LABELS[k].question}
+                </dt>
+                <dd className="mt-1 text-sm font-semibold">{(LIFE_PLAN_LABELS[k].options as Record<string, string>)[lp[k]]}</dd>
               </div>
             ))}
           </dl>
         </div>
 
-        <div className="flex flex-wrap gap-1.5 text-sm">
-          {card.heightCm && (
-            <span className="chip">
-              <Ruler className="h-3.5 w-3.5" /> {card.heightCm} cm
-            </span>
-          )}
-          <span className="chip">
-            <Languages className="h-3.5 w-3.5" /> {card.languages.join(", ")}
-          </span>
-          <span className="chip">{HABIT_LABELS.diet.options[card.habits.diet]}</span>
-          <span className="chip">Drinks: {HABIT_LABELS.drinks.options[card.habits.drinks].toLowerCase()}</span>
-          <span className="chip">Smokes: {HABIT_LABELS.smokes.options[card.habits.smokes].toLowerCase()}</span>
-          {card.faith && <span className="chip">{card.faith}</span>}
-          {card.college && (
-            <span className="chip">
-              {card.college}
-              {card.gradYear ? ` '${String(card.gradYear).slice(2)}` : ""}
-            </span>
-          )}
-        </div>
+        {p3 && <PromptCard q={p3.q} a={p3.a} action={promptAction?.(2)} />}
       </div>
     </article>
   );
