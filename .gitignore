@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local data store
 /.data/
+
+# local tooling
+/.claude/
