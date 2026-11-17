@@ -96,6 +96,8 @@ export interface User {
   birthDate?: string;
   createdAt: number;
   lastActiveAt: number;
+  /** When the member last opened the activity feed; newer items count as unseen. */
+  activitySeenAt?: number;
   onboarded: boolean;
   profile?: Profile;
   verification: Verification;
@@ -163,6 +165,8 @@ export interface DatePlan {
   proposedBy: string;
   status: "proposed" | "accepted" | "declined";
   note?: string;
+  proposedAt?: number;
+  respondedAt?: number;
 }
 
 export interface Checkin {

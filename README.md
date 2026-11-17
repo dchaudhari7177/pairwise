@@ -46,7 +46,7 @@ sponsored puzzles), not from users' pockets.
 | `aarav@pairwise.demo` | Daily Picks, a date proposal to accept, a half-solved Spark, 3 likes |
 | `meera@pairwise.demo` | The inbound cap (10 likes now, 2 queued), Scam Shield catching a scam, close-kindly |
 | `kabir@pairwise.demo` | Plus member: 10 picks, 5 slots, Relocation mode |
-| `admin@pairwise.demo` | Founder console: north-star metric, funnel, hypotheses, moderation queue |
+| `admin@pairwise.demo` | Founder console: north-star metric, funnel, a live A/B test, retention cohorts, moderation queue |
 
 Or sign up fresh: verification uses a clearly labelled simulated eLitmus
 consent screen (try `demo.candidate@elitmus.test`). Demo data resets nightly.
@@ -61,6 +61,7 @@ The full walkthrough is in [docs/DEMO.md](docs/DEMO.md).
 | "hi" and ghosting | **Spark** co-op puzzles · **3 open slots** · **close kindly** in one tap · 7-day expiry |
 | Colleagues seeing your profile | **Hide from my verified employer and college** · **blur until match**, enforced on the server |
 | Chat that never becomes a safe date | **Date Plan**: mutual consent, public venues, share with a friend, private check-in |
+| Gut-feel product decisions | A **randomised experiment** in the founder console (hash-assigned arms, confidence intervals, p-value, required sample size) instead of trusting a biased correlation |
 | Paywalled basics | Seeing **who liked you is free**. Plus sells convenience, never safety or visibility |
 | Caste-sorted matrimony | Values and life-plan matching; **no caste filters, by principle** |
 
@@ -83,7 +84,7 @@ Every decision, with its trade-off, is in the [founder's notes](docs/PRODUCT.md)
 - **Firestore** (pilot in `nam5`; launch target `asia-south1`, Mumbai) through a tiny `DocStore` interface; an
   **in-memory store** for tests and zero-setup local runs
 - **Zod** validation, **jose** JWT sessions, **scrypt** password hashing
-- **Vitest**: 100 tests over the matching engine, Scam Shield, Spark (every
+- **Vitest**: 113 tests over the matching engine, Scam Shield, Spark (every
   puzzle brute-forced for a unique answer) and all services
 - **Vercel** (functions in `iad1`, next to the database) with a nightly cron that resets the demo scenario
 
@@ -109,7 +110,7 @@ Requires Node 20.9+.
 ```bash
 npm install
 npm run dev        # http://localhost:3000, auto-seeds the demo scenario, no setup needed
-npm test           # 100 tests
+npm test           # 113 tests
 npm run lint && npm run typecheck && npm run build
 ```
 

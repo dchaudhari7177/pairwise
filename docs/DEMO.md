@@ -8,6 +8,9 @@ Demo data resets every night at 03:00 IST, so feel free to click everything.
 
 ## 1. Aarav: the core loop (aarav@pairwise.demo)
 
+0. **Activity** (the bell): four new things since yesterday: Ishita's date
+   suggestion, two likes on specific prompts, and Sneha's Spark. Each one
+   links to the screen where you act on it. The badge clears once you've looked.
 1. **Today**: five Daily Picks, one at a time. Note **"Why you're seeing
    Diya"** (shared values, the same timeline) and the
    **"Diya already liked you"** tag. Tap **Like this answer** on a prompt and
@@ -46,6 +49,12 @@ Demo data resets every night at 03:00 IST, so feel free to click everything.
 - **North star**: Weekly Meaningful Conversations.
 - **Funnel** from verified member to planned date; **women's share per city**
   against the 40% threshold; **hypotheses H2–H6** against their targets; MRR.
+- **Live experiment (H4)**: half of new matches get a Spark suggestion,
+  assigned by a hash of the match id. The observational H4 row says Spark chats
+  go 3× deeper. The randomised readout shows the honest picture: a wide
+  confidence interval, p ≈ 0.2, and about 370 matches per arm needed, so the
+  verdict is "keep running".
+- **Retention by sign-up week**: weekly cohorts, W0 to W4.
 - **Moderation queue**: Vikram (auto-reported by Scam Shield) and Harsh.
   Suspend, warn or dismiss.
 - **Reset demo data** restores every story.

@@ -1,8 +1,9 @@
 "use client";
 
-import { Heart, MessageCircle, Settings, ShieldCheck, Sparkles, UserRound } from "lucide-react";
+import { Bell, Heart, MessageCircle, Settings, ShieldCheck, Sparkles, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import type { Gender } from "@/lib/types";
 import { isConversationPath } from "./AppFrame";
 import { LogoMark } from "./Logo";
@@ -16,13 +17,27 @@ const ITEMS = [
 ] as const;
 
 interface NavProps {
-  counts: { likes: number; unread: number; yourTurn: number };
+  counts: { likes: number; unread: number; yourTurn: number; activity: number };
   plus: boolean;
   me: { name: string; seed: string; gender: Gender; photo: { url: string; blurred: boolean } | null };
 }
 
+/**
+ * Layouts don't re-render on client navigation, so once you've opened
+ * Activity we hide the count we showed you until the server sends a new one.
+ */
+function useActivityBadge(count: number) {
+  const path = usePathname();
+  const [dismissed, setDismissed] = useState<number | null>(null);
+  const onActivity = path === "/activity";
+  // Adjusting state while rendering (React's documented pattern), not in an effect.
+  if (onActivity && dismissed !== count) setDismissed(count);
+  return onActivity || dismissed === count ? 0 : count;
+}
+
 export function AppNav({ counts, plus, me }: NavProps) {
   const path = usePathname();
+  const activity = useActivityBadge(counts.activity);
   const badge = (key: string) => (key === "likes" ? counts.likes : key === "chats" ? counts.unread || counts.yourTurn : 0);
   const active = (href: string) => path === href || path.startsWith(`${href}/`);
 
@@ -51,6 +66,12 @@ export function AppNav({ counts, plus, me }: NavProps) {
           ))}
         </nav>
         <div className="mt-6 space-y-1 border-t border-line pt-6 text-sm">
+          <Link href="/activity" className={`flex items-center justify-between rounded-2xl px-3.5 py-2.5 font-medium ${active("/activity") ? "bg-card text-ink shadow-soft" : "text-ink-2 hover:bg-card"}`}>
+            <span className="flex items-center gap-3">
+              <Bell className="h-4 w-4 text-rose" /> Activity
+            </span>
+            {activity > 0 && <span className="bg-love min-w-6 rounded-full px-2 py-0.5 text-center text-xs font-bold text-white">{activity}</span>}
+          </Link>
           <Link href="/safety" className={`flex items-center gap-3 rounded-2xl px-3.5 py-2.5 font-medium ${active("/safety") ? "bg-card text-ink shadow-soft" : "text-ink-2 hover:bg-card"}`}>
             <ShieldCheck className="h-4 w-4 text-sage" /> Safety centre
           </Link>
@@ -94,8 +115,9 @@ export function AppNav({ counts, plus, me }: NavProps) {
   );
 }
 
-export function MobileTopBar() {
+export function MobileTopBar({ activity: count = 0 }: { activity?: number }) {
   const path = usePathname();
+  const activity = useActivityBadge(count);
   if (isConversationPath(path)) return null;
   return (
     <header className="glass sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line/60 px-4 md:hidden">
@@ -104,6 +126,14 @@ export function MobileTopBar() {
         <span className="font-display text-lg font-semibold">pairwise</span>
       </Link>
       <div className="flex items-center gap-0.5">
+        <Link href="/activity" aria-label={activity ? `Activity, ${activity} new` : "Activity"} className="relative rounded-full p-2 text-ink-2 hover:bg-paper-2">
+          <Bell className="h-5 w-5" />
+          {activity > 0 && (
+            <span className="bg-love absolute right-0.5 top-0.5 min-w-[1.05rem] rounded-full px-1 text-center text-[0.6rem] font-bold leading-[1.05rem] text-white ring-2 ring-paper">
+              {activity > 9 ? "9+" : activity}
+            </span>
+          )}
+        </Link>
         <Link href="/safety" aria-label="Safety centre" className="rounded-full p-2 text-ink-2 hover:bg-paper-2">
           <ShieldCheck className="h-5 w-5" />
         </Link>

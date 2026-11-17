@@ -69,6 +69,30 @@ built to test them.
 | H5 | Spreading attention fairly keeps both sides engaged | **Attention balancing**: an inbound like cap plus exposure for less-seen profiles | Gap in time to first match between men and women shrinks week on week |
 | H6 | Safety features help people meet in person | **Scam Shield**, Date Plan, Share-with-a-friend, post-date check-in | ≥ 15% of active conversations reach a planned date |
 
+### Testing H4 properly: a randomised experiment
+
+Comparing chats that played Spark with chats that didn't is misleading.
+People who choose to play a puzzle were probably going to talk more anyway
+(selection bias), so the "2×" in the seeded data says little about Spark
+itself. The founder console still shows that comparison, labelled
+*observational*, next to a **randomised experiment** that answers the real
+question:
+
+- **Treatment:** half of all new matches get a chat line suggesting a Spark.
+  The other half (control) get nothing extra. Spark itself stays available to everyone.
+- **Assignment:** a stable hash of the match id (`spark_nudge_v1`). It needs
+  no storage, gives the same answer on every server, and can be recomputed
+  for analysis. Changing the salt starts a clean v2.
+- **Metric:** share of matches reaching 10+ messages, read 72 hours after
+  the match, counted **intent-to-treat** (every match stays in its arm whether
+  or not they played).
+- **Readout:** rates with 95% Wilson intervals, a two-proportion z-test, and
+  the sample size needed to detect a 10-point lift (about 370 matches per arm
+  at a 30% baseline). Until both arms reach that size, the console says "keep
+  running", even if the gap looks large. With pilot data it does.
+
+That last rule matters most. A founder who ships on n = 8 is reading noise.
+
 ## 4. Who it is for
 
 **Primary:** early-career professionals, 22–30, in tier-1 Indian tech cities,
@@ -115,7 +139,8 @@ Persona sketches used throughout the app's demo data:
 | Private from your world | Hide from my company, hide from my college, photos blurred until match (enforced on the server), pause profile |
 | Safe | Scam Shield (money, UPI, crypto and off-platform pressure detection), report/block, moderation queue, Date Plan with public partner venues, Share-with-a-friend link, post-date check-in |
 | Your data, your call | Download my data (JSON), real account deletion, granular consents |
-| Owning the outcome | Admin console with the north-star metric, funnel, city gender balance, revenue and the report queue |
+| Calm notifications | An Activity feed (likes, matches, Spark, date plans, check-ins) with a badge. No "someone viewed you", no streaks |
+| Owning the outcome | Founder console with the north-star metric, funnel, city gender balance, a live randomised experiment, weekly retention cohorts, revenue and the report queue |
 
 ## 7. North-star metric
 

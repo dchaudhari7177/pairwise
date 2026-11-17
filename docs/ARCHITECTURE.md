@@ -64,6 +64,22 @@ connections), costs about one cheap read per active chat every 4 seconds, and
 is easy to reason about. The path to realtime is Firestore listeners with
 custom tokens. The service layer wouldn't change.
 
+### Experiments without an assignment table
+`src/lib/experiments.ts` assigns each unit to an arm with a 32-bit FNV-1a hash
+of `salt:unitId`. Assignment is pure, so there's no table to keep in sync, it
+is identical on every function instance, and the analysis can recompute it.
+The readout (`src/lib/stats.ts`) is textbook and dependency-free: Wilson
+intervals, a pooled two-proportion z-test and a normal-approximation
+sample-size estimate, each covered by tests against reference values.
+
+### A derived activity feed
+The Activity feed (`src/lib/services/activity.ts`) is computed from likes and
+matches on read instead of being stored as notification documents. It can't
+drift from the real state, deleting a like or a match removes its items, and
+blocked people disappear automatically. One `activitySeenAt` timestamp per
+member drives the badge. At scale this becomes a fan-out-on-write collection
+feeding web push; the page wouldn't change.
+
 ### Server-enforced privacy
 - `toCard()` is the only member shape that leaves the server. It never
   includes email, birth date, consents, trust counters or the employer domain.
@@ -106,13 +122,15 @@ would prerender is tiny. Request-time rendering keeps the mental model simple.
 
 ## Testing
 
-`npm test` runs 100 tests (Vitest) covering:
+`npm test` runs 113 tests (Vitest) covering:
 
 - **Compatibility:** every hard filter, symmetry, reasons
 - **Picks:** attention balancing, diversity cap, determinism, activity
 - **Scam Shield:** true positives and ordinary chat that must not trip it
 - **Spark:** every puzzle brute-forced: exactly one answer combined, more than one with either half alone
 - **Services:** likes and matches, the inbound cap, slots, messaging, expiry, Spark flow, Date Plan, moderation, Plus, export and deletion
+- **Experiments:** normal CDF/quantile, Wilson, z-test and sample size against reference values; hash assignment is stable, salted and splits ~50/50; only treatment matches get the nudge
+- **Activity:** queued likes stay hidden, a like becomes a match, date replies reach the proposer, blocked people vanish, seen marks clear the badge
 - **Seed:** every demo profile passes real sign-up validation; each demo account's story holds; reset restores it
 
 ## Scaling path

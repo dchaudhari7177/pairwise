@@ -48,6 +48,8 @@ function userFrom(p: Person, now: number, i: number): User {
     birthDate: p.dob,
     createdAt,
     lastActiveAt: now - (p.activeDaysAgo ?? (i % 3)) * DAY - (i % 5) * HOUR,
+    // Demo members last opened Activity yesterday, so today's events show as new.
+    activitySeenAt: now - 20 * HOUR,
     onboarded: true,
     profile: {
       firstName: p.name,
@@ -235,7 +237,7 @@ export function buildScenario(now: number) {
   const ishita = s.match("s_aarav", "s_ishita", 3 * DAY, {
     spark: { puzzleId: "cafe", startedBy: "s_ishita", startedAt: now - 3 * DAY + 10 * 60000, roles: { s_ishita: "A", s_aarav: "B" }, attempts: 1, solvedAt: now - 3 * DAY + 16 * 60000, solvedBy: "s_aarav", played: ["cafe"] },
     meetReady: { s_aarav: true, s_ishita: true },
-    datePlan: { venueId: "blr-dicedeck", at: sat, proposedBy: "s_ishita", status: "proposed" },
+    datePlan: { venueId: "blr-dicedeck", at: sat, proposedBy: "s_ishita", status: "proposed", proposedAt: now - 3 * HOUR },
   });
   ishita
     .sys("It's mutual! Ishita's note: “Your 'send me a puzzle' line was basically a dare.”", 3 * DAY)

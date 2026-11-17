@@ -64,7 +64,7 @@ export async function proposeDate(
   if (hour < 7 || hour >= 22) throw badRequest("For a first date we suggest daytime or early evening (7 AM–10 PM).", "late_hour");
   if (m.datePlan?.status === "accepted" && m.datePlan.at > now) throw conflict("You already have a date planned.", "already_planned");
 
-  const plan: DatePlan = { venueId: venue.id, at: input.at, proposedBy: viewer.id, status: "proposed", note: input.note?.slice(0, 140) };
+  const plan: DatePlan = { venueId: venue.id, at: input.at, proposedBy: viewer.id, status: "proposed", note: input.note?.slice(0, 140), proposedAt: now };
   await store.batch([
     { type: "update", col: "matches", id: matchId, patch: { datePlan: plan, lastMessageAt: now, lastMessageBy: "system", lastMessagePreview: "📍 Date proposed" } },
     { type: "set", col: "messages", id: newId(`${matchId}_p`), data: sys(matchId, `📍 ${viewer.profile!.firstName} suggested ${venue.name}, ${venue.area} on ${formatIst(input.at)}.`, now) },
@@ -80,7 +80,7 @@ export async function respondToDate(store: DocStore, viewer: User, matchId: stri
   if (m.datePlan.proposedBy === viewer.id) throw forbidden("Waiting for them to respond.");
   const venue = getVenue(m.datePlan.venueId)!;
   await store.batch([
-    { type: "update", col: "matches", id: matchId, patch: { "datePlan.status": accept ? "accepted" : "declined" } },
+    { type: "update", col: "matches", id: matchId, patch: { "datePlan.status": accept ? "accepted" : "declined", "datePlan.respondedAt": now } },
     {
       type: "set",
       col: "messages",

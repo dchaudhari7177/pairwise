@@ -93,10 +93,10 @@ KEY ASSUMPTIONS (and how the pilot tests them)
 • About 10% of invited eLitmus alumni join the waitlist, and women value a verified pool more than a large one. Measured by waitlist conversion and women's D30 retention.
 • 5 picks a day feels considered, not limiting: at least 40% of picks get a decision (H2).
 • Slots and expiry cut ghosting below 25% (H3).
-• Spark chats go deeper than non-Spark chats (H4).
+• Spark chats go deeper than non-Spark chats (H4). Measured with a randomised experiment, not a correlation: half of new matches get a Spark suggestion, assigned by a hash of the match id, and the founder console reports the lift with a confidence interval, a p-value and the sample size still needed. Pilot data isn't enough yet, and the console says so.
 • Attention balancing narrows the gender gap in time to first match (H5).
 • Safety features lead to dates: at least 15% of conversations reach a plan (H6).
 • Venues will pay for verified couple footfall. We start with free listings for perks, then charge.
 • Members accept that dating data never flows back to eLitmus. That firewall is also the legal requirement and the brand promise.
 
-All of this is live in the working app: a founder console tracks every hypothesis against its target, and the demo accounts walk through each feature.
+All of this is live in the working app: a founder console tracks every hypothesis against its target, runs the H4 experiment, shows weekly retention cohorts, and the demo accounts walk through each feature.
