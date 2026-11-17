@@ -9,6 +9,11 @@ import { PicksDeck } from "./PicksDeck";
 
 export const metadata: Metadata = { title: "Today" };
 
+function greeting() {
+  const hour = Number(new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: "numeric", hour12: false }));
+  return hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+}
+
 export default async function TodayPage({ searchParams }: { searchParams: Promise<{ welcome?: string }> }) {
   const { store, user } = await requireMember();
   const { welcome } = await searchParams;
@@ -31,10 +36,13 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
       <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="eyebrow">{new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Kolkata" })}</p>
-          <h1 className="mt-1 text-4xl font-semibold">Today&apos;s picks</h1>
+          <h1 className="mt-1 text-[2.1rem] font-semibold leading-tight sm:text-4xl">
+            {greeting()}, <span className="italic text-rose">{p.firstName}</span>
+          </h1>
         </div>
-        <p className="text-sm text-muted">
-          {today.picks.length} of {today.total} left · new picks {formatIst(today.refreshesAt, { weekday: undefined, day: undefined, month: undefined })}
+        <p className="inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1.5 text-xs font-semibold text-ink-2">
+          <Sparkles className="h-3.5 w-3.5 text-rose" /> {today.picks.length} of {today.total} picks left · refresh at{" "}
+          {formatIst(today.refreshesAt, { weekday: undefined, day: undefined, month: undefined })}
         </p>
       </header>
 
@@ -46,7 +54,7 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
       )}
 
       {today.picks.length > 0 ? (
-        <PicksDeck picks={today.picks} total={today.total} me={{ seed: p.avatarSeed, name: p.firstName, values: p.values, interests: p.interests }} />
+        <PicksDeck picks={today.picks} total={today.total} me={{ seed: p.avatarSeed, name: p.firstName, gender: p.gender, values: p.values, interests: p.interests }} />
       ) : (
         <div className="card animate-rise p-8 text-center">
           <Moon className="mx-auto h-10 w-10 text-rose" />

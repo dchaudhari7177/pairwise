@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, MessageSquareHeart, X } from "lucide-react";
+import { Heart, MessageCircleHeart, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -19,22 +19,30 @@ export function PicksDeck({
 }: {
   picks: TodayPick[];
   total: number;
-  me: { seed: string; name: string; values: string[]; interests: string[] };
+  me: { seed: string; name: string; gender: TodayPick["card"]["gender"]; values: string[]; interests: string[] };
 }) {
   const router = useRouter();
   const [composer, setComposer] = useState<{ promptIndex?: number } | null>(null);
   const [match, setMatch] = useState<{ id: string; pick: TodayPick } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [error, setError] = useState<{ message: string; code: string } | null>(null);
+  const [leaving, setLeaving] = useState<"left" | "right" | null>(null);
   const [busy, setBusy] = useState(false);
   const current = picks[0];
   const shared = useMemo(() => ({ values: new Set(me.values), interests: new Set(me.interests) }), [me]);
   const currentId = current?.card.id;
 
-  // Each new pick starts at the top, so it's read from the beginning.
+  // Each new pick starts fresh, at the top.
   useEffect(() => {
+    setLeaving(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentId]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 3800);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   if (!current) return null;
   const position = total - picks.length + 1;
@@ -44,9 +52,13 @@ export function PicksDeck({
     try {
       const r = await api<Result>("/api/likes", { body: { targetId: current.card.id, note: note || undefined, promptIndex } });
       setComposer(null);
-      if (r.matched) setMatch({ id: r.matchId, pick: current });
-      else setToast(r.queued ? `Like sent. ${current.card.firstName}'s inbox is full today, so they'll see it tomorrow morning.` : `Like sent to ${current.card.firstName}.`);
-      router.refresh();
+      if (r.matched) {
+        setMatch({ id: r.matchId, pick: current });
+      } else {
+        setToast(r.queued ? `Sent! ${current.card.firstName}'s inbox is full today, so they'll see it tomorrow morning.` : `Like sent to ${current.card.firstName} 💌`);
+        setLeaving("right");
+        setTimeout(() => router.refresh(), 320);
+      }
     } catch (e) {
       setComposer(null);
       setError({ message: (e as Error).message, code: e instanceof ApiError ? e.code : "error" });
@@ -56,37 +68,39 @@ export function PicksDeck({
   async function pass() {
     setBusy(true);
     setError(null);
+    setLeaving("left");
     try {
       await api("/api/passes", { body: { targetId: current.card.id } });
-      router.refresh();
+      setTimeout(() => router.refresh(), 200);
     } catch (e) {
+      setLeaving(null);
       setError({ message: (e as Error).message, code: "error" });
     }
     setBusy(false);
   }
 
   return (
-    <div>
-      <div className="mb-4 flex items-center gap-1.5" aria-label={`Pick ${position} of ${total}`}>
+    <div className="pb-28">
+      <div className="mb-5 flex items-center gap-1.5" aria-label={`Pick ${position} of ${total}`}>
         {Array.from({ length: total }, (_, i) => (
-          <span key={i} className={`h-1.5 flex-1 rounded-full ${i < position - 1 ? "bg-ink/25" : i === position - 1 ? "bg-rose" : "bg-line"}`} />
+          <span key={i} className={`h-1.5 flex-1 rounded-full transition-colors ${i < position - 1 ? "bg-ink/20" : i === position - 1 ? "bg-love" : "bg-line"}`} />
         ))}
       </div>
 
-      {current.likedYou && (
-        <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-rose-soft px-3 py-1 text-sm font-semibold text-rose-2">
-          <Heart className="h-4 w-4 fill-current" /> {current.card.firstName} already liked you
-        </p>
-      )}
-
-      <div key={current.card.id} className="animate-rise">
+      <div key={current.card.id} className={leaving === "left" ? "animate-out-left" : leaving === "right" ? "animate-out-right" : "animate-rise"}>
         <ProfileView
           card={current.card}
           shared={shared}
           reasons={current.reasons}
+          score={current.score}
+          likedYou={current.likedYou}
           promptAction={(i) => (
-            <button className="btn btn-ghost btn-sm" onClick={() => setComposer({ promptIndex: i })}>
-              <MessageSquareHeart className="h-4 w-4 text-rose" /> Like this answer
+            <button
+              aria-label={`Like ${current.card.firstName}'s answer`}
+              className="round-action h-11 w-11 bg-card text-rose shadow-soft ring-1 ring-line hover:bg-rose-soft"
+              onClick={() => setComposer({ promptIndex: i })}
+            >
+              <Heart className="h-5 w-5" />
             </button>
           )}
         />
@@ -103,16 +117,30 @@ export function PicksDeck({
         </div>
       )}
 
-      {/* Sticky decision bar */}
-      <div className="sticky bottom-20 z-20 mt-6 md:bottom-6">
-        <div className="mx-auto flex max-w-md items-center gap-3 rounded-full border border-line bg-card/95 p-2 shadow-lift backdrop-blur">
-          <button className="btn btn-ghost flex-1" onClick={pass} disabled={busy}>
-            <X className="h-5 w-5" /> Not for me
-          </button>
-          <button className="btn btn-rose flex-1" onClick={() => setComposer({})}>
-            <Heart className="h-5 w-5" /> {current.likedYou ? "Like back" : "Interested"}
-          </button>
-        </div>
+      {/* Floating decision buttons */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 flex items-center justify-center gap-5 md:bottom-8 md:left-64">
+        <button
+          aria-label={`Pass on ${current.card.firstName}`}
+          onClick={pass}
+          disabled={busy}
+          className="round-action pointer-events-auto h-16 w-16 bg-card text-ink shadow-lift ring-1 ring-line"
+        >
+          <X className="h-7 w-7" strokeWidth={2.5} />
+        </button>
+        <button
+          aria-label="Like with a note"
+          onClick={() => setComposer({})}
+          className="round-action pointer-events-auto h-12 w-12 bg-card text-rose shadow-lift ring-1 ring-line"
+        >
+          <MessageCircleHeart className="h-5 w-5" />
+        </button>
+        <button
+          aria-label={current.likedYou ? `Like ${current.card.firstName} back` : `Like ${current.card.firstName}`}
+          onClick={() => like("")}
+          className="round-action btn-love pointer-events-auto h-[4.5rem] w-[4.5rem]"
+        >
+          <Heart className="h-8 w-8 fill-current" />
+        </button>
       </div>
 
       {composer && (
@@ -123,9 +151,19 @@ export function PicksDeck({
           onSend={(note) => like(note, composer.promptIndex)}
         />
       )}
-      {match && <MatchCelebration me={me} them={match.pick.card} matchId={match.id} onClose={() => setMatch(null)} />}
+      {match && (
+        <MatchCelebration
+          me={me}
+          them={match.pick.card}
+          matchId={match.id}
+          onClose={() => {
+            setMatch(null);
+            router.refresh();
+          }}
+        />
+      )}
       {toast && (
-        <div className="fixed inset-x-4 bottom-24 z-50 mx-auto max-w-md animate-pop rounded-2xl bg-ink px-4 py-3 text-sm text-paper shadow-lift md:bottom-8" onAnimationEnd={() => setTimeout(() => setToast(null), 3500)}>
+        <div role="status" className="fixed inset-x-4 top-20 z-50 mx-auto max-w-sm animate-pop rounded-2xl bg-ink px-4 py-3 text-center text-sm font-medium text-paper shadow-lift md:top-8 md:left-64">
           {toast}
         </div>
       )}
