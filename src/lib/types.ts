@@ -92,6 +92,8 @@ export interface User {
   plusCancelAt?: number;
   /** Plus: browse the city you are moving to before you move. */
   travelCity?: CityId;
+  /** Set once at sign-up (18+ check) and copied onto the profile. */
+  birthDate?: string;
   createdAt: number;
   lastActiveAt: number;
   onboarded: boolean;
