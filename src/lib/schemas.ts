@@ -1,7 +1,5 @@
 import { z } from "zod";
-import { HABIT_LABELS, INTERESTS, LANGUAGES, LIFE_PLAN_LABELS, PROMPTS, VALUES } from "./options";
-
-const keysOf = <T extends object>(o: T) => Object.keys(o) as [string, ...string[]];
+import { INTERESTS, LANGUAGES, PROMPTS, VALUES } from "./options";
 
 export const signupSchema = z.object({
   email: z.string().trim().email().max(120),
@@ -32,15 +30,15 @@ export const profileSchema = z.object({
   role: z.string().trim().min(1).max(50),
   intent: z.enum(["long_term", "marriage", "figuring_out"]),
   lifePlan: z.object({
-    relocate: z.enum(keysOf(LIFE_PLAN_LABELS.relocate.options)),
-    timeline: z.enum(keysOf(LIFE_PLAN_LABELS.timeline.options)),
-    kids: z.enum(keysOf(LIFE_PLAN_LABELS.kids.options)),
-    family: z.enum(keysOf(LIFE_PLAN_LABELS.family.options)),
+    relocate: z.enum(["yes", "maybe", "no"]),
+    timeline: z.enum(["within_2y", "2_4y", "not_sure"]),
+    kids: z.enum(["want", "open", "dont_want", "not_sure"]),
+    family: z.enum(["nuclear", "joint", "open"]),
   }),
   habits: z.object({
-    diet: z.enum(keysOf(HABIT_LABELS.diet.options)),
-    drinks: z.enum(keysOf(HABIT_LABELS.drinks.options)),
-    smokes: z.enum(keysOf(HABIT_LABELS.smokes.options)),
+    diet: z.enum(["veg", "nonveg", "eggetarian", "vegan", "jain"]),
+    drinks: z.enum(["never", "socially", "often"]),
+    smokes: z.enum(["never", "socially", "often"]),
   }),
   values: z.array(z.enum(VALUES)).min(3).max(5),
   interests: z.array(z.enum(INTERESTS)).min(3).max(8),
