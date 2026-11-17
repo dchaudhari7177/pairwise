@@ -69,12 +69,12 @@ export function Portrait({
         <rect width="300" height="375" fill={`url(#${id}g)`} />
         <circle cx={sunX} cy="96" r="70" fill={`url(#${id}s)`} />
         <g transform={`rotate(${tilt} 150 300)`} fill={deep} opacity="0.9">
-          <circle cx="150" cy="168" r="54" />
-          <path d="M40 375c4-86 50-128 110-128s106 42 110 128z" />
+          <circle cx="150" cy="172" r="46" />
+          <path d="M52 375c4-80 44-122 98-122s94 42 98 122z" />
         </g>
         <g fill="none" stroke="#fff" strokeOpacity="0.18" strokeWidth="1.2">
-          <circle cx="150" cy="168" r="66" />
-          <circle cx="150" cy="168" r="80" />
+          <circle cx="150" cy="172" r="60" />
+          <circle cx="150" cy="172" r="76" />
         </g>
       </svg>
       {showInitial && (
