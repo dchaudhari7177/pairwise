@@ -8,3 +8,6 @@ export const POST = route(async () => {
   assertAdmin(user);
   return seedDemo(store, Date.now(), { reset: true });
 });
+
+// Resetting the demo touches a few hundred documents; give it headroom.
+export const maxDuration = 60;

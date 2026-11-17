@@ -80,12 +80,12 @@ Every decision, with its trade-off, is in the [founder's notes](docs/PRODUCT.md)
 
 - **Next.js 16** (App Router) + **React 19** + **TypeScript**, a mobile-first **PWA**
 - **Tailwind CSS v4** with a small custom design system (Fraunces + Inter)
-- **Firestore** (`asia-south1`) through a tiny `DocStore` interface; an
+- **Firestore** (pilot in `nam5`; launch target `asia-south1`, Mumbai) through a tiny `DocStore` interface; an
   **in-memory store** for tests and zero-setup local runs
 - **Zod** validation, **jose** JWT sessions, **scrypt** password hashing
 - **Vitest**: 100 tests over the matching engine, Scam Shield, Spark (every
   puzzle brute-forced for a unique answer) and all services
-- **Vercel** (`bom1`) with a nightly cron that resets the demo scenario
+- **Vercel** (functions in `iad1`, next to the database) with a nightly cron that resets the demo scenario
 
 ```
 src/
@@ -118,12 +118,12 @@ With no environment variables, the app uses an in-memory store persisted to
 
 ### Deploy (Vercel + Firestore)
 
-1. Create a Firebase project, enable **Firestore (Native) in `asia-south1`**,
+1. Create a Firebase project, enable **Firestore (Native)**, ideally in `asia-south1`,
    and create a service account with the *Cloud Datastore User* role.
 2. Set environment variables on Vercel (see [.env.example](.env.example)):
    `SESSION_SECRET` (a long random string), `FIREBASE_SERVICE_ACCOUNT` (JSON or
    base64), `CRON_SECRET`, `NEXT_PUBLIC_SITE_URL`.
-3. `vercel deploy --prod`. Functions run in `bom1` (see `vercel.json`).
+3. `vercel deploy --prod`. Set `regions` in `vercel.json` to the region nearest your database (`bom1` for `asia-south1`, `iad1` for `nam5`).
 4. Seed once: log in as admin and press **Reset demo data**. The cron keeps it
    fresh nightly.
 

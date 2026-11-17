@@ -15,7 +15,7 @@ features built to meet them. A real launch would be reviewed by counsel.
 | **GST** | 18% on online services | Prices shown inclusive of GST; tax breakdown at checkout |
 | **Age (Indian Majority Act)** | Contracts with minors are void; children's data needs special care | 18+ check at sign-up, date of birth locked, underage reports hide the profile immediately |
 | **Navtej Singh Johar v. Union of India (2018)** | Consensual same-sex relationships are legal | Inclusive orientation options; privacy controls (company and college walls, blur until match) reduce the risk of being outed |
-| **Data localisation (good practice)** | Not strictly mandated for this category | Firestore `asia-south1` (Mumbai) and Vercel `bom1` |
+| **Data localisation (good practice)** | Not strictly mandated for this category | Pilot runs in Google Cloud's US multi-region; the launch plan moves data to `asia-south1` (Mumbai) and functions to `bom1` |
 
 ## Structural decisions
 

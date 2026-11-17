@@ -1,11 +1,17 @@
 # Architecture
 
 Pairwise is a single Next.js 16 application: a mobile-first PWA plus a JSON
-API, deployed on Vercel (Mumbai, `bom1`), with Firestore (`asia-south1`) as
-the database.
+API, deployed on Vercel, with Firestore as the database.
+
+> **Regions.** The pilot database was created in Firestore's US multi-region
+> (`nam5`), and a Firestore location can't be changed after creation. So the
+> functions run in `iad1` (Washington), next to the data: one long round trip
+> per request instead of one per query. For launch, the database moves to
+> `asia-south1` (Mumbai) with functions in `bom1`, for latency and DPDP-friendly
+> data localisation.
 
 ```
- Browser (PWA)                    Vercel · bom1                       Google Cloud · asia-south1
+ Browser (PWA)                    Vercel · iad1                       Google Cloud · nam5
 ┌───────────────┐   HTTPS   ┌──────────────────────────┐   Admin SDK   ┌──────────────────────┐
 │ React 19 UI   │ ────────► │ Next.js App Router        │ ────────────► │ Firestore            │
 │ (server comps │ ◄──────── │  • pages (RSC)            │               │  users, credentials, │

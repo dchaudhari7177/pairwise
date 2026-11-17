@@ -310,7 +310,7 @@ export default function WhyPage() {
           <Section id="tech" n={10} title="How it's built">
             <ul>
               <li><strong>Next.js 16 + TypeScript</strong>, a mobile-first PWA. One codebase, installable, no app-store tax.</li>
-              <li><strong>Firestore in Mumbai (asia-south1)</strong> behind a small document-store interface, with an in-memory implementation for tests and local development.</li>
+              <li><strong>Firestore</strong> (the pilot runs in the US multi-region, with functions co-located in Washington; at launch it moves to Mumbai) behind a small document-store interface, with an in-memory implementation for tests and local development.</li>
               <li><strong>Pure, tested domain core:</strong> compatibility, fair ranking, Scam Shield and Spark are plain functions with 100 unit and integration tests.</li>
               <li><strong>Security:</strong> scrypt passwords, signed httpOnly session cookies, same-origin checks, store-backed rate limits, server-enforced photo privacy, and DTOs that never leak private fields.</li>
               <li><strong>Polling chat</strong> (4s, only while visible): robust on serverless and cheap at pilot scale, with a clear path to realtime later.</li>

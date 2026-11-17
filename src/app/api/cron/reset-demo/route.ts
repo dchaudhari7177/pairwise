@@ -10,3 +10,6 @@ export const GET = route(async (req) => {
   if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) throw forbidden();
   return seedDemo(await getStore(), Date.now(), { reset: true });
 });
+
+// Resetting the demo touches a few hundred documents; give it headroom.
+export const maxDuration = 60;

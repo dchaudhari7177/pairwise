@@ -32,7 +32,7 @@ const DOCS: Record<string, Doc> = {
         <h2>Who we share with</h2>
         <p>
           We do not sell personal data. We do not share your dating activity with eLitmus, recruiters or employers. We use a small set of
-          processors under contract: cloud hosting in India (Google Cloud, Mumbai region), web hosting (Vercel), and in production a
+          processors under contract: cloud hosting (Google Cloud; Mumbai region at launch), web hosting (Vercel), and in production a
           payment processor (Razorpay) and an email provider. We disclose data to authorities only when Indian law requires it.
         </p>
         <h2>How long we keep it</h2>
