@@ -109,6 +109,7 @@ export function ProfileView({
   score,
   likedYou,
   promptAction,
+  heroFooter,
   hidePortrait = false,
 }: {
   card: ProfileCard;
@@ -117,6 +118,8 @@ export function ProfileView({
   score?: number;
   likedYou?: boolean;
   promptAction?: (index: number) => React.ReactNode;
+  /** Rendered under the pinned photo card on wide screens (e.g. the decision buttons). */
+  heroFooter?: React.ReactNode;
   hidePortrait?: boolean;
 }) {
   const lp = card.lifePlan;
@@ -126,6 +129,7 @@ export function ProfileView({
       {!hidePortrait && (
         <div className="mx-auto w-full max-w-md lg:sticky lg:top-6">
           <HeroCard card={card} score={score} likedYou={likedYou} />
+          {heroFooter && <div className="mt-5 hidden justify-center lg:flex">{heroFooter}</div>}
         </div>
       )}
       <div className="min-w-0 space-y-4">

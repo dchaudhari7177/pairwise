@@ -88,7 +88,7 @@ export function HeroShowcase() {
       <div className="relative">
         <PhoneMockup />
 
-        <div className="animate-bob absolute -left-2 top-[1%] w-52 sm:top-[14%] rounded-2xl border border-line bg-card p-3 shadow-lift sm:-left-10">
+        <div className="animate-bob absolute -left-2 top-[1%] w-52 sm:-left-8 sm:top-[30%] rounded-2xl border border-line bg-card p-3 shadow-lift sm:-left-10">
           <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-rose-2">
             <Puzzle className="h-3.5 w-3.5" /> Spark · The Café Riddle
           </p>
@@ -108,7 +108,7 @@ export function HeroShowcase() {
           </span>
         </div>
 
-        <div className="animate-bob absolute -left-1 bottom-[16%] hidden w-56 rounded-2xl border border-amber/30 bg-amber-soft p-3 shadow-lift [animation-delay:3s] sm:-left-14 sm:block">
+        <div className="animate-bob absolute -left-1 bottom-[3%] hidden w-56 rounded-2xl border border-amber/30 bg-amber-soft p-3 shadow-lift [animation-delay:3s] sm:-left-14 sm:block">
           <p className="flex items-center gap-1.5 text-[11px] font-bold text-amber">
             <ShieldAlert className="h-3.5 w-3.5" /> Scam Shield
           </p>

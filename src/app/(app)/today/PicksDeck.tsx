@@ -26,7 +26,8 @@ export function PicksDeck({
   const [match, setMatch] = useState<{ id: string; pick: TodayPick } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [error, setError] = useState<{ message: string; code: string } | null>(null);
-  const [leaving, setLeaving] = useState<"left" | "right" | null>(null);
+  // Exit animation, keyed by pick so it resets automatically when the next pick arrives.
+  const [exit, setExit] = useState<{ id: string; dir: "left" | "right" } | null>(null);
   const [busy, setBusy] = useState(false);
   const current = picks[0];
   const shared = useMemo(() => ({ values: new Set(me.values), interests: new Set(me.interests) }), [me]);
@@ -34,7 +35,6 @@ export function PicksDeck({
 
   // Each new pick starts fresh, at the top.
   useEffect(() => {
-    setLeaving(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentId]);
 
@@ -45,6 +45,7 @@ export function PicksDeck({
   }, [toast]);
 
   if (!current) return null;
+  const leaving = exit?.id === current.card.id ? exit.dir : null;
   const position = total - picks.length + 1;
 
   async function like(note: string, promptIndex?: number) {
@@ -55,8 +56,12 @@ export function PicksDeck({
       if (r.matched) {
         setMatch({ id: r.matchId, pick: current });
       } else {
-        setToast(r.queued ? `Sent! ${current.card.firstName}'s inbox is full today, so they'll see it tomorrow morning.` : `Like sent to ${current.card.firstName} 💌`);
-        setLeaving("right");
+        setToast(
+          r.queued
+            ? `Sent! ${current.card.firstName}'s inbox is full today, so they'll see it tomorrow morning.`
+            : `Like sent to ${current.card.firstName} 💌`,
+        );
+        setExit({ id: current.card.id, dir: "right" });
         setTimeout(() => router.refresh(), 320);
       }
     } catch (e) {
@@ -68,32 +73,66 @@ export function PicksDeck({
   async function pass() {
     setBusy(true);
     setError(null);
-    setLeaving("left");
+    setExit({ id: current.card.id, dir: "left" });
     try {
       await api("/api/passes", { body: { targetId: current.card.id } });
       setTimeout(() => router.refresh(), 200);
     } catch (e) {
-      setLeaving(null);
+      setExit(null);
       setError({ message: (e as Error).message, code: "error" });
     }
     setBusy(false);
   }
 
+  const actions = (
+    <>
+      <button
+        aria-label={`Pass on ${current.card.firstName}`}
+        onClick={pass}
+        disabled={busy}
+        className="round-action pointer-events-auto h-16 w-16 bg-card text-ink shadow-lift ring-1 ring-line"
+      >
+        <X className="h-7 w-7" strokeWidth={2.5} />
+      </button>
+      <button
+        aria-label="Like with a note"
+        onClick={() => setComposer({})}
+        className="round-action pointer-events-auto h-12 w-12 bg-card text-rose shadow-lift ring-1 ring-line"
+      >
+        <MessageCircleHeart className="h-5 w-5" />
+      </button>
+      <button
+        aria-label={current.likedYou ? `Like ${current.card.firstName} back` : `Like ${current.card.firstName}`}
+        onClick={() => like("")}
+        className="round-action btn-love pointer-events-auto h-[4.5rem] w-[4.5rem]"
+      >
+        <Heart className="h-8 w-8 fill-current" />
+      </button>
+    </>
+  );
+
   return (
-    <div className="pb-28">
+    <div className="pb-28 lg:pb-10">
       <div className="mb-5 flex items-center gap-1.5" aria-label={`Pick ${position} of ${total}`}>
         {Array.from({ length: total }, (_, i) => (
-          <span key={i} className={`h-1.5 flex-1 rounded-full transition-colors ${i < position - 1 ? "bg-ink/20" : i === position - 1 ? "bg-love" : "bg-line"}`} />
+          <span
+            key={i}
+            className={`h-1.5 flex-1 rounded-full transition-colors ${i < position - 1 ? "bg-ink/20" : i === position - 1 ? "bg-love" : "bg-line"}`}
+          />
         ))}
       </div>
 
-      <div key={current.card.id} className={leaving === "left" ? "animate-out-left" : leaving === "right" ? "animate-out-right" : "animate-rise"}>
+      <div
+        key={current.card.id}
+        className={leaving === "left" ? "animate-out-left" : leaving === "right" ? "animate-out-right" : "animate-rise"}
+      >
         <ProfileView
           card={current.card}
           shared={shared}
           reasons={current.reasons}
           score={current.score}
           likedYou={current.likedYou}
+          heroFooter={<div className="flex items-center gap-5">{actions}</div>}
           promptAction={(i) => (
             <button
               aria-label={`Like ${current.card.firstName}'s answer`}
@@ -117,30 +156,9 @@ export function PicksDeck({
         </div>
       )}
 
-      {/* Floating decision buttons */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 flex items-center justify-center gap-5 md:bottom-8 md:left-64">
-        <button
-          aria-label={`Pass on ${current.card.firstName}`}
-          onClick={pass}
-          disabled={busy}
-          className="round-action pointer-events-auto h-16 w-16 bg-card text-ink shadow-lift ring-1 ring-line"
-        >
-          <X className="h-7 w-7" strokeWidth={2.5} />
-        </button>
-        <button
-          aria-label="Like with a note"
-          onClick={() => setComposer({})}
-          className="round-action pointer-events-auto h-12 w-12 bg-card text-rose shadow-lift ring-1 ring-line"
-        >
-          <MessageCircleHeart className="h-5 w-5" />
-        </button>
-        <button
-          aria-label={current.likedYou ? `Like ${current.card.firstName} back` : `Like ${current.card.firstName}`}
-          onClick={() => like("")}
-          className="round-action btn-love pointer-events-auto h-[4.5rem] w-[4.5rem]"
-        >
-          <Heart className="h-8 w-8 fill-current" />
-        </button>
+      {/* Floating decision buttons (phones and tablets; on laptops they sit under the card) */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 flex items-center justify-center gap-5 md:bottom-8 md:left-64 lg:hidden">
+        {actions}
       </div>
 
       {composer && (
@@ -163,7 +181,10 @@ export function PicksDeck({
         />
       )}
       {toast && (
-        <div role="status" className="fixed inset-x-4 top-20 z-50 mx-auto max-w-sm animate-pop rounded-2xl bg-ink px-4 py-3 text-center text-sm font-medium text-paper shadow-lift md:top-8 md:left-64">
+        <div
+          role="status"
+          className="fixed inset-x-4 top-20 z-50 mx-auto max-w-sm animate-pop rounded-2xl bg-ink px-4 py-3 text-center text-sm font-medium text-paper shadow-lift md:top-8 md:left-64"
+        >
           {toast}
         </div>
       )}

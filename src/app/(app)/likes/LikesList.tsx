@@ -51,7 +51,7 @@ export function LikesList({ likes, me }: { likes: ReceivedLike[]; me: { seed: st
   return (
     <>
       {error && <p className="mb-4 rounded-2xl bg-rose-soft p-4 text-sm text-rose-2">{error}</p>}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4">
         {likes.map((l, i) => (
           <button
             key={l.card.id}
