@@ -16,7 +16,7 @@ export default async function LikesPage() {
     <div>
       <header className="mb-6">
         <p className="eyebrow">Free, always</p>
-        <h1 className="mt-1 text-4xl font-semibold">Who liked you</h1>
+        <h1 className="mt-1 text-[2.1rem] font-semibold leading-tight sm:text-4xl">Who liked you <span className="text-love">{likes.length > 0 ? `· ${likes.length}` : ""}</span></h1>
         <p className="mt-2 max-w-xl text-ink-2">
           Other apps charge to see this. We don&apos;t. Sorted by how compatible you are, not by when they arrived.
         </p>
@@ -34,7 +34,7 @@ export default async function LikesPage() {
       )}
 
       {likes.length > 0 ? (
-        <LikesList likes={likes} me={{ seed: p.avatarSeed, name: p.firstName, values: p.values, interests: p.interests }} />
+        <LikesList likes={likes} me={{ seed: p.avatarSeed, name: p.firstName, gender: p.gender, values: p.values, interests: p.interests }} />
       ) : (
         <div className="card p-8 text-center">
           <HeartHandshake className="mx-auto h-10 w-10 text-rose" />
