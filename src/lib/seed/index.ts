@@ -88,6 +88,9 @@ function userFrom(p: Person, now: number, i: number): User {
 /** Builds a match plus its messages from a compact script. */
 class Scenario {
   ops: WriteOp[] = [];
+  firstMatch = new Map<string, number>();
+  /** Pairs that already interacted (matched or liked), so seeded passes never contradict them. */
+  touched = new Set<string>();
   private n = 0;
   constructor(private now: number) {}
 
@@ -106,6 +109,18 @@ class Scenario {
       seed: true,
       ...extra,
     };
+    this.touched.add(id);
+    this.firstMatch.set(a, Math.min(this.firstMatch.get(a) ?? Infinity, m.createdAt));
+    this.firstMatch.set(b, Math.min(this.firstMatch.get(b) ?? Infinity, m.createdAt));
+    // Every match came from two likes; record them so the like→match funnel adds up.
+    for (const [from, to, lag] of [
+      [b, a, 5 * HOUR],
+      [a, b, 0],
+    ] as const) {
+      const at = m.createdAt - lag;
+      const like: Like = { id: `${from}__${to}`, from, to, createdAt: at, deliverAt: at, deliverDay: istDay(at), status: "matched", seed: true };
+      this.ops.push({ type: "set", col: "likes", id: like.id, data: like });
+    }
     const msgs: Message[] = [];
     const api = {
       id,
@@ -138,6 +153,7 @@ class Scenario {
   }
 
   like(from: string, to: string, ago: number, opts: { note?: string; promptIndex?: number; deliverDay?: string; deliverAt?: number } = {}) {
+    this.touched.add([from, to].sort().join("__"));
     const at = this.now - ago;
     const l: Like = {
       id: `${from}__${to}`,
@@ -403,6 +419,39 @@ export function buildScenario(now: number) {
   pay("s_varun", "plus_monthly", 299, 10 * DAY);
   pay("s_ritika", "plus_monthly", 299, 3 * DAY);
   pay("s_sana", "plus_monthly", 299, 25 * DAY);
+
+  // Sign-up dates that make sense: shortly before each member's first match.
+  users.forEach((u, i) => {
+    const first = s.firstMatch.get(u.id);
+    const fallback = now - (4 + ((i * 3) % 16)) * DAY;
+    u.createdAt = first ? first - (8 + (i % 5) * 9) * HOUR : fallback;
+    if (u.id === "s_aarav" || u.id === "s_meera" || u.id === "s_kabir") u.createdAt = Math.min(u.createdAt, now - 30 * DAY);
+    u.verification.verifiedAt = u.createdAt + HOUR;
+    u.consents.at = u.createdAt;
+  });
+
+  // Yesterday's Daily Picks for a slice of members, with decisions, so the
+  // "picks that get a decision" hypothesis (H2) has data to read.
+  const yesterday = addDays(istDay(now), -1);
+  const pickers = users.filter((u) => u.profile && !u.id.match(/^s_(aarav|meera|kabir)$/)).slice(0, 18);
+  pickers.forEach((viewer, vi) => {
+    const pool = users.filter(
+      (c) => c.id !== viewer.id && c.profile!.city === viewer.profile!.city && viewer.profile!.interestedIn.includes(c.profile!.gender) && c.profile!.interestedIn.includes(viewer.profile!.gender),
+    );
+    const chosen = pool.slice(vi % 3, (vi % 3) + 5);
+    if (!chosen.length) return;
+    s.set("picks", `${viewer.id}_${yesterday}`, {
+      id: `${viewer.id}_${yesterday}`,
+      uid: viewer.id,
+      day: yesterday,
+      picks: chosen.map((c) => ({ uid: c.id, score: 60, reasons: [] })),
+      createdAt: istDayStart(yesterday) + 8 * HOUR,
+    });
+    // About half of picks get a pass; liked ones are covered by match likes above.
+    chosen.forEach((c, ci) => {
+      if ((ci + vi) % 2 === 0 && !s.touched.has([viewer.id, c.id].sort().join("__"))) s.set("passes", `${viewer.id}__${c.id}`, { id: `${viewer.id}__${c.id}`, from: viewer.id, to: c.id, createdAt: istDayStart(yesterday) + 12 * HOUR });
+    });
+  });
 
   const admin: User = {
     id: "s_admin",
