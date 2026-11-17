@@ -9,11 +9,10 @@ import {
   Scale,
   ShieldAlert,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { DemoLogin } from "@/components/DemoLogin";
-import { Portrait } from "@/components/Portrait";
+import { HeroShowcase } from "@/components/PhoneMockup";
 import { DEMO_ACCOUNTS, DEMO_PASSWORD } from "@/lib/seed";
 
 const PILLARS = [
@@ -55,61 +54,38 @@ export default function Landing() {
       {/* ------------------------------ Hero ------------------------------ */}
       <section className="relative overflow-hidden">
         <div className="grain pointer-events-none absolute inset-0" />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-12 sm:px-6 md:grid-cols-[1.1fr_0.9fr] md:pt-20">
+        <div className="pointer-events-none absolute -top-32 right-[-10%] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(255,122,89,0.18),transparent_65%)]" />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] md:pt-16">
           <div className="animate-rise">
             <p className="eyebrow inline-flex items-center gap-2 rounded-full border border-line bg-card px-3 py-1.5 normal-case tracking-normal">
               <ShieldCheck className="h-3.5 w-3.5 text-sage" />
               <span className="text-ink-2">Founding cohort verified with eLitmus · Bengaluru · Pune · Hyderabad</span>
             </p>
-            <h1 className="mt-6 text-[2.6rem] font-semibold leading-[1.05] sm:text-6xl">
+            <h1 className="mt-6 text-[2.5rem] font-semibold leading-[1.04] tracking-tight sm:text-6xl lg:text-[4.1rem]">
               Fewer matches.
               <br />
               Real people.
               <br />
-              <span className="italic text-rose">Conversations that start themselves.</span>
+              <span className="text-love italic">Conversations that start themselves.</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-2">
               Pairwise is slow dating for India&apos;s early-career professionals: verified-only, five thoughtful picks a day,
               and an icebreaker you solve <em>together</em>. Built for people who moved cities for work and want something real.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/join" className="btn btn-rose">
+              <Link href="/join" className="btn btn-love px-6 py-3.5">
                 Join the founding cohort
               </Link>
-              <Link href="#demo" className="btn btn-ghost">
+              <Link href="#demo" className="btn btn-ghost px-6 py-3.5">
                 Try the live demo
               </Link>
             </div>
             <p className="mt-4 text-sm text-muted">Free forever for verification, safety and seeing who likes you.</p>
           </div>
 
-          {/* Product vignette */}
-          <div className="relative mx-auto w-full max-w-sm animate-rise [animation-delay:120ms]">
-            <div className="absolute -left-6 top-10 hidden h-40 w-40 rounded-full bg-rose-soft blur-2xl md:block" />
-            <div className="card relative overflow-hidden p-3 shadow-lift">
-              <Portrait seed="s_ishita" name="Ishita" className="aspect-[4/4.2] w-full" />
-              <div className="p-3">
-                <p className="flex items-center gap-1.5 font-display text-2xl font-semibold">
-                  Ishita, 25 <BadgeCheck className="h-5 w-5 text-sage" />
-                </p>
-                <p className="text-sm text-ink-2">UX designer · Koramangala · from Pune</p>
-                <div className="mt-3 rounded-xl bg-rose-soft/70 p-3 text-sm">
-                  <p className="eyebrow flex items-center gap-1 text-rose-2">
-                    <Sparkles className="h-3 w-3" /> Why you&apos;re seeing Ishita
-                  </p>
-                  <p className="mt-1 text-ink-2">You both value Curiosity, Kindness and Growth · Both into Board games and Puzzles</p>
-                </div>
-              </div>
-            </div>
-            <div className="card absolute -bottom-8 -right-4 w-60 animate-pop p-4 shadow-lift [animation-delay:500ms] sm:-right-10">
-              <p className="eyebrow flex items-center gap-1.5">
-                <Puzzle className="h-3.5 w-3.5 text-rose" /> Spark · The Café Riddle
-              </p>
-              <p className="mt-2 text-sm text-ink-2">
-                <span className="font-semibold text-ink">Your clues:</span> it opens before 9 AM · it has board games
-              </p>
-              <p className="mt-2 text-xs text-muted">Ishita holds the other half…</p>
-            </div>
+          {/* Product showcase: a miniature of the real Discover screen */}
+          <div className="animate-rise [animation-delay:120ms]">
+            <HeroShowcase />
           </div>
         </div>
       </section>

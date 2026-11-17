@@ -94,25 +94,14 @@ export function AppNav({ counts, plus, me }: NavProps) {
   );
 }
 
-const TITLES: [string, string][] = [
-  ["/today", "Discover"],
-  ["/likes", "Likes"],
-  ["/chats", "Chats"],
-  ["/me", "Profile"],
-  ["/settings", "Settings"],
-  ["/safety", "Safety"],
-  ["/plus", "Plus"],
-];
-
 export function MobileTopBar() {
   const path = usePathname();
   if (isConversationPath(path)) return null;
-  const title = TITLES.find(([p]) => path.startsWith(p))?.[1];
   return (
     <header className="glass sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line/60 px-4 md:hidden">
       <Link href="/today" className="flex items-center gap-2" aria-label="Pairwise home">
         <LogoMark size={24} />
-        <span className="font-display text-lg font-semibold">{title === "Discover" || !title ? "pairwise" : title}</span>
+        <span className="font-display text-lg font-semibold">pairwise</span>
       </Link>
       <div className="flex items-center gap-0.5">
         <Link href="/safety" aria-label="Safety centre" className="rounded-full p-2 text-ink-2 hover:bg-paper-2">
