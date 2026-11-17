@@ -99,7 +99,7 @@ export function MeetPanel({ convo, venues, onChange }: { convo: Conversation; ve
             <span className="mt-1 block text-xs text-muted">First dates: between 7 AM and 10 PM, in a public place.</span>
           </label>
           <button
-            className="btn btn-rose mt-4"
+            className="btn btn-love mt-4"
             disabled={!!busy}
             onClick={() => act("propose", `/api/matches/${convo.match.id}/date`, { venueId, at: new Date(when).getTime() })}
           >
@@ -127,7 +127,7 @@ export function MeetPanel({ convo, venues, onChange }: { convo: Conversation; ve
                 <button className="btn btn-ghost flex-1" disabled={!!busy} onClick={() => act("decline", `/api/matches/${convo.match.id}/date/respond`, { accept: false })}>
                   Can&apos;t make it
                 </button>
-                <button className="btn btn-rose flex-1" disabled={!!busy} onClick={() => act("accept", `/api/matches/${convo.match.id}/date/respond`, { accept: true })}>
+                <button className="btn btn-love flex-1" disabled={!!busy} onClick={() => act("accept", `/api/matches/${convo.match.id}/date/respond`, { accept: true })}>
                   {busy === "accept" && <Loader2 className="h-4 w-4 animate-spin" />} Accept
                 </button>
               </div>

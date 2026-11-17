@@ -51,7 +51,7 @@ export function LikeComposer({
           </span>
         </label>
         <button
-          className="btn btn-rose mt-2 w-full"
+          className="btn btn-love mt-2 w-full"
           disabled={busy}
           onClick={async () => {
             setBusy(true);

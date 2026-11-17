@@ -43,7 +43,7 @@ export function avatarSvg(seed: string, gender: Gender = "nonbinary"): string {
     hairColor: [pick(HAIR_COLOR, 11)],
     mouth: [pick(HAPPY, 5)] as never,
     eyes: [pick(EYES, 9)] as never,
-    beardProbability: gender === "man" ? 22 : 0,
+    beardProbability: gender === "man" ? 12 : 0,
     earringsProbability: gender === "woman" ? 45 : gender === "nonbinary" ? 25 : 0,
     hairAccessoriesProbability: gender === "woman" ? 12 : 0,
     glassesProbability: 14,

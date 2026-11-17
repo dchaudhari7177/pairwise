@@ -97,7 +97,7 @@ export function PlusPanel({
               <span className="text-base font-normal text-muted">/{p.per}</span>
             </p>
             <p className="mt-1 text-xs text-muted">{p.note} Price includes GST.</p>
-            <button className="btn btn-rose mt-5 w-full" onClick={() => setCheckout(p)}>
+            <button className="btn btn-love mt-5 w-full" onClick={() => setCheckout(p)}>
               Choose {p.label.toLowerCase()}
             </button>
           </div>

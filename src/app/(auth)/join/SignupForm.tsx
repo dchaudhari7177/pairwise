@@ -69,7 +69,7 @@ export function SignupForm() {
       </fieldset>
 
       <FormError message={error} />
-      <button className="btn btn-rose w-full" disabled={busy}>
+      <button className="btn btn-love w-full" disabled={busy}>
         {busy && <Loader2 className="h-4 w-4 animate-spin" />} Create account
       </button>
     </form>

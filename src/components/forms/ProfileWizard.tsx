@@ -410,7 +410,7 @@ export function ProfileWizard({
               {step === 4 ? "Save profile" : "Continue"} <ArrowRight className="h-4 w-4" />
             </button>
           ) : (
-            <button type="button" className="btn btn-rose" onClick={finish} disabled={busy}>
+            <button type="button" className="btn btn-love" onClick={finish} disabled={busy}>
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               {mode === "onboarding" ? "See my first picks" : "Done"}
             </button>

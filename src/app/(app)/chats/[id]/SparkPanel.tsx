@@ -53,7 +53,7 @@ export function SparkPanel({ matchId, spark, otherName, active, onChange }: { ma
             A two-minute puzzle for two. You each get half the clues, so you&apos;ll need to talk it through. That&apos;s the point.
           </p>
           {feedback && <p className="mt-3 text-sm text-rose-2">{feedback}</p>}
-          <button className="btn btn-rose mt-5" onClick={start} disabled={busy || !active}>
+          <button className="btn btn-love mt-5" onClick={start} disabled={busy || !active}>
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />} Start a Spark
           </button>
         </div>
@@ -86,7 +86,7 @@ export function SparkPanel({ matchId, spark, otherName, active, onChange }: { ma
       <div className="card p-5">
         <p className="label">Your answer {spark.attempts > 0 && <span className="font-normal text-muted">· {spark.attempts} wrong guess{spark.attempts === 1 ? "" : "es"} so far</span>}</p>
         {p.kind === "choice" ? (
-          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          <div className="mt-2 grid grid-cols-2 gap-2">
             {p.options!.map((o) => (
               <button key={o.id} disabled={busy} onClick={() => submit(o.id)} className="rounded-2xl border border-line-2 bg-card p-3 text-left transition hover:border-ink hover:bg-paper-2">
                 <span className="block font-semibold">{o.label}</span>
