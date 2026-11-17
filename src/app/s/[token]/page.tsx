@@ -71,7 +71,10 @@ export default async function SharedPlan({ params }: { params: Promise<{ token: 
                 </ul>
               </div>
               <p className="flex items-center gap-2 rounded-xl border border-line px-3 py-2 text-sm">
-                <PhoneCall className="h-4 w-4 text-rose" /> Emergency: <strong>112</strong> · Women&apos;s helpline: <strong>181</strong>
+                <PhoneCall className="h-4 w-4 shrink-0 text-rose" />
+                <span>
+                  Emergency: <strong>112</strong> · Women&apos;s helpline: <strong>181</strong>
+                </span>
               </p>
             </div>
           </div>
