@@ -1,11 +1,12 @@
 import { conflict, forbidden, notFound, badRequest } from "../errors";
+import { assignArm, SPARK_NUDGE, SPARK_NUDGE_TEXT } from "../experiments";
 import { assess, browsingCity } from "../matching/compatibility";
 import { rankPicks, type Candidate } from "../matching/picks";
 import { LIMITS } from "../options";
 import { evaluate } from "../safety/scam-shield";
 import { inc, type DocStore, type WriteOp } from "../store/types";
 import { addDays, istDay, istDayStart, isoWeek } from "../time";
-import type { Block, Like, Match, Pass, PicksDoc, User } from "../types";
+import type { Block, Like, Match, Message, Pass, PicksDoc, User } from "../types";
 import { toCard, type ProfileCard } from "./profiles";
 import { assertCanInteract, getUser, picksLimit, slotLimit } from "./users";
 
@@ -228,6 +229,11 @@ export async function like(
         },
       },
     ];
+    // H4 experiment: half of new matches (by a stable hash of the match id) get a Spark suggestion.
+    if (assignArm(SPARK_NUDGE, matchId) === SPARK_NUDGE.treatment) {
+      const nudge: Message = { id: `${matchId}_nudge`, matchId, from: "system", kind: "spark", text: SPARK_NUDGE_TEXT, createdAt: now + 1 };
+      ops.push({ type: "set", col: "messages", id: nudge.id, data: nudge });
+    }
     await store.batch(ops);
     return { matched: true, matchId };
   }

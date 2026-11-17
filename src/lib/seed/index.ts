@@ -1,4 +1,5 @@
 import { hashPassword } from "../auth/password";
+import { assignArm, SPARK_NUDGE, SPARK_NUDGE_TEXT } from "../experiments";
 import { evaluate } from "../safety/scam-shield";
 import { getPuzzle } from "../spark/puzzles";
 import type { DocStore, WriteOp } from "../store/types";
@@ -122,6 +123,10 @@ class Scenario {
       this.ops.push({ type: "set", col: "likes", id: like.id, data: like });
     }
     const msgs: Message[] = [];
+    // Seeded matches go through the same H4 randomisation as live ones.
+    if (assignArm(SPARK_NUDGE, id) === SPARK_NUDGE.treatment) {
+      msgs.push({ id: `${id}_nudge`, matchId: id, from: "system", kind: "spark", text: SPARK_NUDGE_TEXT, createdAt: m.createdAt + 1, seed: true });
+    }
     const api = {
       id,
       m,
