@@ -488,21 +488,21 @@ export async function seedDemo(store: DocStore, now = Date.now(), opts: { reset?
         del.push({ type: "delete", col, id });
       }
     };
-    for (const col of SEED_COLLECTIONS) {
-      for (const d of await store.query<{ id: string }>(col, [["seed", "==", true]])) drop(col, d.id);
-    }
+    // All lookups run in parallel: on Firestore this turns ~60s of round trips into a few seconds.
     const byField: [string, string][] = [
       ["likes", "from"], ["likes", "to"], ["passes", "from"], ["passes", "to"], ["reports", "reported"], ["reports", "reporter"],
       ["payments", "uid"], ["picks", "uid"], ["shares", "uid"], ["blocks", "by"], ["blocks", "target"], ["photos", "owner"],
     ];
-    for (const [col, field] of byField) {
-      for (const d of await store.query<{ id: string }>(col, [[field, "in", ids]])) drop(col, d.id);
-    }
-    for (const uid of ids) {
-      for (const m of await store.query<Match>("matches", [["members", "array-contains", uid]])) {
-        drop("matches", m.id);
-        for (const msg of await store.query<Message>("messages", [["matchId", "==", m.id]])) drop("messages", msg.id);
-      }
+    const [flagged, linked, matchLists] = await Promise.all([
+      Promise.all(SEED_COLLECTIONS.map(async (col) => ({ col, docs: await store.query<{ id: string }>(col, [["seed", "==", true]]) }))),
+      Promise.all(byField.map(async ([col, field]) => ({ col, docs: await store.query<{ id: string }>(col, [[field, "in", ids]]) }))),
+      Promise.all(ids.map((uid) => store.query<Match>("matches", [["members", "array-contains", uid]]))),
+    ]);
+    for (const { col, docs } of [...flagged, ...linked]) for (const d of docs) drop(col, d.id);
+    const matchIds = [...new Set(matchLists.flat().map((m) => m.id))];
+    for (const id of matchIds) drop("matches", id);
+    if (matchIds.length) {
+      for (const msg of await store.query<Message>("messages", [["matchId", "in", matchIds]])) drop("messages", msg.id);
     }
     await store.batch(del);
   }
