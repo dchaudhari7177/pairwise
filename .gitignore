@@ -46,3 +46,7 @@ next-env.d.ts
 # local tooling
 /.claude/
 !.env.example
+
+# local secrets (service-account keys)
+/.secrets/
+*-firebase-adminsdk-*.json
