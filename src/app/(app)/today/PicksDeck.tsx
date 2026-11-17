@@ -3,7 +3,7 @@
 import { Heart, MessageSquareHeart, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LikeComposer } from "@/components/LikeComposer";
 import { MatchCelebration } from "@/components/MatchCelebration";
 import { ProfileView } from "@/components/ProfileView";
@@ -29,6 +29,12 @@ export function PicksDeck({
   const [busy, setBusy] = useState(false);
   const current = picks[0];
   const shared = useMemo(() => ({ values: new Set(me.values), interests: new Set(me.interests) }), [me]);
+  const currentId = current?.card.id;
+
+  // Each new pick starts at the top, so it's read from the beginning.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentId]);
 
   if (!current) return null;
   const position = total - picks.length + 1;
