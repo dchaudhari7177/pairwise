@@ -1,7 +1,9 @@
+import { AppMain } from "@/components/AppFrame";
 import { AppNav, MobileTopBar } from "@/components/AppNav";
 import { requireMember } from "@/lib/server/viewer";
 import { likesReceived } from "@/lib/services/discovery";
 import { listMatches } from "@/lib/services/matches";
+import { toCard } from "@/lib/services/profiles";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const { store, user } = await requireMember();
@@ -11,9 +13,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     unread: matches.active.reduce((n, m) => n + m.unread, 0),
     yourTurn: matches.active.filter((m) => m.yourTurn).length,
   };
+  const p = user.profile!;
+  const card = toCard(user, { self: true });
   return (
     <div className="flex min-h-dvh">
-      <AppNav counts={counts} plus={user.plan === "plus"} name={user.profile!.firstName} />
+      <AppNav counts={counts} plus={user.plan === "plus"} me={{ name: p.firstName, seed: p.avatarSeed, gender: p.gender, photo: card.photo }} />
       <div className="flex min-w-0 flex-1 flex-col">
         <MobileTopBar />
         {user.status === "paused" && (
@@ -21,7 +25,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             Your profile is paused. Nobody new will see you. <a href="/settings" className="font-semibold underline">Unpause</a>
           </div>
         )}
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-28 pt-6 sm:px-6 md:pb-12 md:pt-10">{children}</main>
+        <AppMain>{children}</AppMain>
       </div>
     </div>
   );
