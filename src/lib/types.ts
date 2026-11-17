@@ -203,6 +203,8 @@ export interface Message {
   text: string;
   createdAt: number;
   signals?: ScamSignal[];
+  /** Scam Shield tip shown only to the receiver. */
+  tip?: string;
   seed?: boolean;
 }
 
