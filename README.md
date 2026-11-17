@@ -7,7 +7,7 @@
 A verified-only, slow-dating app for India's early-career professionals,
 built end to end for the eLitmus Software Developer assignment.
 
-**[Live app](#live-demo)** · **[Founder's notes](docs/PRODUCT.md)** · **[Evaluator walkthrough](docs/DEMO.md)** · **[Submission answers](docs/SUBMISSION.md)**
+**[Live app](https://pairwise-pi.vercel.app)** · **[Founder's notes](docs/PRODUCT.md)** · **[Evaluator walkthrough](docs/DEMO.md)** · **[Submission answers](docs/SUBMISSION.md)**
 
 </div>
 
@@ -38,7 +38,7 @@ sponsored puzzles), not from users' pockets.
 
 | | |
 |---|---|
-| **App** | _deployment URL goes here_ |
+| **App** | **https://pairwise-pi.vercel.app** |
 | **Password for every demo account** | `Demo@2026` |
 
 | Account | What it shows |

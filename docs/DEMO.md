@@ -1,5 +1,7 @@
 # Evaluator walkthrough (about 10 minutes)
 
+Live app: **https://pairwise-pi.vercel.app**
+
 All demo accounts use the password **`Demo@2026`**. You can also use the
 one-click buttons in the "Step into a story" section of the home page.
 Demo data resets every night at 03:00 IST, so feel free to click everything.
