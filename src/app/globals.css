@@ -1,26 +1,292 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------------
+   Pairwise design tokens
+   Warm ivory paper, deep ink, a rosewood accent and a sage "verified" green.
+   Editorial serif display (Fraunces) + a clean grotesk for UI (Inter).
+   ------------------------------------------------------------------------ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #faf6f0;
+  --paper-2: #f3ece2;
+  --card: #ffffff;
+  --ink: #1f1a17;
+  --ink-2: #4a423c;
+  --muted: #857a72;
+  --line: #e8dfd4;
+  --line-2: #d9cdbf;
+  --rose: #b23a48;
+  --rose-2: #8e2c39;
+  --rose-soft: #f7e6e3;
+  --sage: #2f6b4f;
+  --sage-soft: #e3efe7;
+  --amber: #9a6416;
+  --amber-soft: #fbefd9;
+  --plum: #2c1a30;
+  --plum-2: #3d2642;
+  --sky-soft: #e6eef6;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-rose: var(--rose);
+  --color-rose-2: var(--rose-2);
+  --color-rose-soft: var(--rose-soft);
+  --color-sage: var(--sage);
+  --color-sage-soft: var(--sage-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-plum: var(--plum);
+  --color-plum-2: var(--plum-2);
+  --color-sky-soft: var(--sky-soft);
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --shadow-soft: 0 1px 2px rgb(31 26 23 / 0.04), 0 8px 24px -12px rgb(31 26 23 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(31 26 23 / 0.05), 0 18px 40px -18px rgb(31 26 23 / 0.28);
+  --animate-rise: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-pop: pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--rose-soft);
+    color: var(--rose-2);
+  }
+  :focus-visible {
+    outline: 2px solid var(--rose);
+    outline-offset: 2px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Component classes live in a layer so Tailwind utilities can still override them. */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding: 0.7rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.1;
+    transition:
+      background 0.15s,
+      color 0.15s,
+      box-shadow 0.15s,
+      transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn:active {
+    transform: scale(0.98);
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-primary:hover {
+    background: var(--plum-2);
+  }
+  .btn-rose {
+    background: var(--rose);
+    color: #fff;
+  }
+  .btn-rose:hover {
+    background: var(--rose-2);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+  .btn-ghost:hover {
+    background: var(--paper-2);
+  }
+  .btn-quiet {
+    background: transparent;
+    color: var(--ink-2);
+    padding-inline: 0.75rem;
+  }
+  .btn-quiet:hover {
+    color: var(--ink);
+    background: var(--paper-2);
+  }
+  .btn-sm {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--paper-2);
+    color: var(--ink-2);
+    border: 1px solid transparent;
+  }
+  .chip-shared {
+    background: var(--rose-soft);
+    color: var(--rose-2);
+  }
+
+  .toggle-chip {
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid var(--line-2);
+    background: var(--card);
+    color: var(--ink-2);
+    transition:
+      background 0.15s,
+      border-color 0.15s,
+      color 0.15s;
+  }
+  .toggle-chip:hover {
+    border-color: var(--ink-2);
+  }
+  .toggle-chip[aria-pressed="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .input {
+    width: 100%;
+    min-width: 0;
+    border-radius: 0.9rem;
+    border: 1px solid var(--line-2);
+    background: var(--card);
+    padding: 0.75rem 0.95rem;
+    font-size: 0.95rem;
+    color: var(--ink);
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+  }
+  .input::placeholder {
+    color: var(--muted);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--ink-2);
+    box-shadow: 0 0 0 3px rgb(178 58 72 / 0.12);
+  }
+  .label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.01em;
+  }
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .prose-pw p {
+    margin: 0.75rem 0;
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+  .prose-pw h2 {
+    font-size: 1.5rem;
+    margin: 2rem 0 0.5rem;
+  }
+  .prose-pw h3 {
+    font-size: 1.15rem;
+    margin: 1.5rem 0 0.25rem;
+  }
+  .prose-pw ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+    color: var(--ink-2);
+    line-height: 1.7;
+  }
+  .prose-pw li {
+    margin: 0.3rem 0;
+  }
+  .prose-pw a {
+    color: var(--rose);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose-pw strong {
+    color: var(--ink);
+  }
+  .grain {
+    background-image: radial-gradient(rgb(31 26 23 / 0.035) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
 }
