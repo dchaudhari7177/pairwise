@@ -172,7 +172,7 @@ export default async function AdminPage() {
           {open.length === 0 && <p className="card p-6 text-center text-ink-2">Queue is clear. 🎉</p>}
           {open.map((r) => (
             <div key={r.id} className="card flex flex-col gap-4 p-5 sm:flex-row sm:items-start">
-              {r.reportedCard && <Avatar seed={r.reportedCard.avatarSeed} name={r.reportedCard.firstName} size={52} />}
+              {r.reportedCard && <Avatar seed={r.reportedCard.avatarSeed} gender={r.reportedCard.gender} name={r.reportedCard.firstName} size={52} />}
               <div className="min-w-0 flex-1">
                 <p className="flex flex-wrap items-center gap-2">
                   <span className="font-semibold">{r.reportedCard?.firstName ?? r.reported}</span>

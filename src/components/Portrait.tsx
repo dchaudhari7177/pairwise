@@ -1,18 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
+import type { Gender } from "@/lib/types";
 
-// Demo members don't have real photos. Using real faces for fictional people
-// would be dishonest, so each gets a generated, editorial-style portrait.
-// Real members can upload a photo, which is shown here instead.
+// Members without a photo (every demo member) get an illustrated portrait
+// (see src/lib/avatar.ts) on a soft, per-person background. Uploaded photos
+// replace it, and "blur until match" photos arrive already blurred from the server.
 
-const PALETTES: [string, string, string][] = [
-  ["#f1c9b6", "#b23a48", "#7d2533"],
-  ["#cfdcc8", "#2f6b4f", "#1f4a36"],
-  ["#f3dcae", "#b07a24", "#7a5114"],
-  ["#d3cde6", "#4b3266", "#2c1a30"],
-  ["#c7dbe8", "#2c5f7c", "#1b3d52"],
-  ["#eccbd2", "#9b3a52", "#6b2236"],
-  ["#dfd1bf", "#7a5a40", "#4f3826"],
-  ["#c9e0dc", "#2e6d68", "#1d4744"],
+const BACKDROPS: [string, string, string][] = [
+  ["#ffd9cc", "#f4a99b", "#e9897f"],
+  ["#dbe8d4", "#b5d0b0", "#8fb89a"],
+  ["#ffe7b8", "#f7c97f", "#eaa75c"],
+  ["#e3dcf3", "#c2b5e6", "#9f8fd6"],
+  ["#d6e8f3", "#a9cde4", "#7fb0d2"],
+  ["#f8d8e2", "#eeb0c4", "#de88a6"],
+  ["#d4ece6", "#a3d5c8", "#73bba9"],
+  ["#f3e2d3", "#e2c2a4", "#cfa27c"],
 ];
 
 function hash(s: string) {
@@ -21,75 +22,88 @@ function hash(s: string) {
   return h;
 }
 
+export function backdropFor(seed: string) {
+  return BACKDROPS[hash(seed) % BACKDROPS.length];
+}
+
+export function avatarUrl(seed: string, gender?: Gender) {
+  return `/avatar/${encodeURIComponent(seed)}?g=${gender ?? "nonbinary"}`;
+}
+
 export function Portrait({
   seed,
   name,
+  gender,
   photo,
   className = "",
-  rounded = "rounded-3xl",
-  showInitial = true,
+  rounded = "rounded-[1.75rem]",
+  showBlurNote = true,
+  framing = "card",
 }: {
   seed: string;
   name: string;
+  gender?: Gender;
   photo?: { url: string; blurred: boolean } | null;
   className?: string;
   rounded?: string;
+  showBlurNote?: boolean;
+  /** "card": head and shoulders, face in the upper part. "face": tight crop for round avatars. */
+  framing?: "card" | "face";
+  /** @deprecated kept for older call sites */
   showInitial?: boolean;
 }) {
   if (photo) {
     return (
       <div className={`relative overflow-hidden bg-paper-2 ${rounded} ${className}`}>
-        <img src={photo.url} alt={photo.blurred ? `${name}'s photo (blurred until you match)` : `${name}`} className={`h-full w-full object-cover ${photo.blurred ? "scale-110 blur-xl" : ""}`} />
-        {photo.blurred && (
-          <span className="absolute inset-x-0 bottom-3 mx-auto w-fit rounded-full bg-ink/70 px-3 py-1 text-xs font-medium text-paper backdrop-blur">
-            Photo unlocks when you match
+        <img src={photo.url} alt={photo.blurred ? `${name}'s photo, blurred until you match` : name} className={`h-full w-full object-cover ${photo.blurred ? "scale-110 blur-xl" : ""}`} />
+        {photo.blurred && showBlurNote && (
+          <span className="absolute inset-x-0 top-1/2 mx-auto w-fit -translate-y-1/2 rounded-full bg-ink/60 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
+            🔒 Unlocks when you match
           </span>
         )}
       </div>
     );
   }
+  const [a, b, c] = backdropFor(seed);
   const h = hash(seed);
-  const [bg, mid, deep] = PALETTES[h % PALETTES.length];
-  const tilt = (h % 7) - 3;
-  const sunX = 60 + (h % 180);
-  const id = `p${h.toString(36)}`;
   return (
-    <div className={`relative overflow-hidden ${rounded} ${className}`} style={{ background: bg }}>
-      <svg viewBox="0 0 300 375" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
-        <defs>
-          <linearGradient id={`${id}g`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor={bg} />
-            <stop offset="1" stopColor={mid} stopOpacity="0.55" />
-          </linearGradient>
-          <radialGradient id={`${id}s`} cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0" stopColor="#fff" stopOpacity="0.85" />
-            <stop offset="1" stopColor="#fff" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="300" height="375" fill={`url(#${id}g)`} />
-        <circle cx={sunX} cy="96" r="70" fill={`url(#${id}s)`} />
-        <g transform={`rotate(${tilt} 150 300)`} fill={deep} opacity="0.9">
-          <circle cx="150" cy="172" r="46" />
-          <path d="M52 375c4-80 44-122 98-122s94 42 98 122z" />
-        </g>
-        <g fill="none" stroke="#fff" strokeOpacity="0.18" strokeWidth="1.2">
-          <circle cx="150" cy="172" r="60" />
-          <circle cx="150" cy="172" r="76" />
-        </g>
-      </svg>
-      {showInitial && (
-        <span className="absolute bottom-3 left-4 font-display text-4xl font-semibold text-white/90 drop-shadow-sm">
-          {name.slice(0, 1)}
-        </span>
-      )}
+    <div
+      className={`relative isolate overflow-hidden ${rounded} ${className}`}
+      style={{ background: `radial-gradient(120% 90% at ${20 + (h % 60)}% 0%, ${a} 0%, ${b} 55%, ${c} 100%)` }}
+    >
+      <div className="absolute -right-10 -top-10 h-2/5 w-3/5 rounded-full bg-white/35 blur-2xl" />
+      <div className="absolute -bottom-6 -left-8 h-1/3 w-1/2 rounded-full blur-2xl" style={{ background: c, opacity: 0.55 }} />
+      <img
+        src={avatarUrl(seed, gender)}
+        alt={`Illustrated portrait of ${name}`}
+        className={`absolute left-1/2 -translate-x-1/2 drop-shadow-[0_12px_18px_rgba(31,26,23,0.18)] ${framing === "face" ? "top-[2%] w-[118%] max-w-none" : "top-[2%] w-[80%]"}`}
+        loading="lazy"
+        draggable={false}
+      />
     </div>
   );
 }
 
-export function Avatar({ seed, name, photo, size = 44 }: { seed: string; name: string; photo?: { url: string; blurred: boolean } | null; size?: number }) {
+export function Avatar({
+  seed,
+  name,
+  gender,
+  photo,
+  size = 44,
+  ring = false,
+}: {
+  seed: string;
+  name: string;
+  gender?: Gender;
+  photo?: { url: string; blurred: boolean } | null;
+  size?: number;
+  ring?: boolean;
+}) {
   return (
-    <div style={{ width: size, height: size }} className="shrink-0">
-      <Portrait seed={seed} name={name} photo={photo ? { ...photo, blurred: photo.blurred } : null} rounded="rounded-full" className="h-full w-full" showInitial={false} />
+    <div style={{ width: size, height: size }} className={`shrink-0 rounded-full ${ring ? "bg-gradient-to-tr from-[#ff7a59] via-rose to-[#8e2c39] p-[2.5px]" : ""}`}>
+      <div className={`h-full w-full rounded-full ${ring ? "bg-paper p-[2px]" : ""}`}>
+        <Portrait seed={seed} name={name} gender={gender} photo={photo} rounded="rounded-full" className="h-full w-full" showBlurNote={false} framing="face" />
+      </div>
     </div>
   );
 }
