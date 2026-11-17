@@ -61,6 +61,8 @@ export interface MatchSummary {
   hasSpark: boolean;
   sparkSolved: boolean;
   datePlanned: boolean;
+  /** Matched, but neither person has written yet. */
+  fresh: boolean;
   createdAt: number;
 }
 
@@ -91,6 +93,7 @@ export async function listMatches(store: DocStore, viewer: User, now = Date.now(
       hasSpark: !!m.spark,
       sparkSolved: !!m.spark?.solvedAt,
       datePlanned: m.datePlan?.status === "accepted",
+      fresh: m.status === "active" && Object.values(m.messageCounts ?? {}).every((n) => !n),
       createdAt: m.createdAt,
     });
   });
