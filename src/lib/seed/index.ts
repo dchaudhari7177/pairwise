@@ -281,7 +281,7 @@ export function buildScenario(now: number) {
     .done();
 
   // People who liked Aarav (delivered).
-  s.like("s_diya", "s_aarav", 9 * HOUR, { note: "Narmada Institute, same batch! Also: what's your dal recipe?", promptIndex: 2 });
+  s.like("s_diya", "s_aarav", 9 * HOUR, { note: "Narmada Institute alum too! Also: what's your dal recipe?", promptIndex: 2 });
   s.like("s_riya", "s_aarav", 26 * HOUR);
   s.like("s_harini", "s_aarav", 4 * HOUR, { note: "I'd take you up on the puzzle challenge 🧩", promptIndex: 0 });
 
