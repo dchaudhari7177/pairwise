@@ -25,6 +25,8 @@
   --plum: #2c1a30;
   --plum-2: #3d2642;
   --sky-soft: #e6eef6;
+  --coral: #ff7a59;
+  --love: linear-gradient(135deg, #ff7a59 0%, #e2475b 45%, #a8314a 100%);
 }
 
 @theme inline {
@@ -52,6 +54,61 @@
   --shadow-lift: 0 2px 4px rgb(31 26 23 / 0.05), 0 18px 40px -18px rgb(31 26 23 / 0.28);
   --animate-rise: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-pop: pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+  --animate-out-left: out-left 0.38s cubic-bezier(0.5, 0, 0.75, 0) both;
+  --animate-out-right: out-right 0.38s cubic-bezier(0.5, 0, 0.75, 0) both;
+  --animate-heart: heart 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+  --animate-float-up: float-up 3.2s ease-in infinite;
+  --animate-bob: bob 6s ease-in-out infinite;
+  --color-coral: var(--coral);
+}
+
+@keyframes out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-115%) rotate(-12deg);
+  }
+}
+@keyframes out-right {
+  to {
+    opacity: 0;
+    transform: translateX(115%) rotate(12deg);
+  }
+}
+@keyframes heart {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes float-up {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1.2);
+    opacity: 0;
+  }
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes rise {
@@ -150,6 +207,46 @@
   }
   .btn-rose:hover {
     background: var(--rose-2);
+  }
+  .btn-love {
+    background: var(--love);
+    color: #fff;
+    box-shadow: 0 10px 24px -10px rgb(226 71 91 / 0.7);
+  }
+  .btn-love:hover {
+    filter: brightness(1.05) saturate(1.05);
+  }
+  .bg-love {
+    background: var(--love);
+  }
+  .text-love {
+    background: var(--love);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glass {
+    background: rgb(255 255 255 / 0.72);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .round-action {
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .round-action:hover {
+    transform: translateY(-2px) scale(1.04);
+  }
+  .round-action:active {
+    transform: scale(0.94);
   }
   .btn-ghost {
     background: transparent;
