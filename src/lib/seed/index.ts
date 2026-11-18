@@ -4,7 +4,7 @@ import { evaluate } from "../safety/scam-shield";
 import { getPuzzle } from "../spark/puzzles";
 import type { DocStore, WriteOp } from "../store/types";
 import { addDays, DAY, HOUR, istDay, istDayStart, isoWeek } from "../time";
-import type { Credential, Like, Match, Message, Payment, Report, User } from "../types";
+import type { Credential, Like, Match, Message, Payment, Report, User, Vouch } from "../types";
 import { answer, COLLEGES, EMPLOYERS, habits, lifePlan, PEOPLE, type Person } from "./people";
 
 /**
@@ -30,19 +30,25 @@ export const DEMO_ACCOUNTS = [
   { email: "aarav@pairwise.demo", uid: "s_aarav", label: "Aarav, 26, Bengaluru", story: "Has a date proposal to answer and a Spark puzzle to finish" },
   { email: "meera@pairwise.demo", uid: "s_meera", label: "Meera, 25, Bengaluru", story: "Sees the inbound cap, Scam Shield and Close-kindly in action" },
   { email: "kabir@pairwise.demo", uid: "s_kabir", label: "Kabir, 27, Pune (Plus)", story: "Plus member: 10 picks, 5 slots, relocation mode" },
+  { email: "vivek@pairwise.demo", uid: "s_vivek", label: "Vivek, 26, Hyderabad (waitlisted)", story: "Waiting for the gender balance; Aarav's vouch code lets him in" },
   { email: "admin@pairwise.demo", uid: "s_admin", label: "Founder / admin", story: "Metrics dashboard and moderation queue" },
 ];
 
-const SEED_COLLECTIONS = ["likes", "passes", "matches", "messages", "reports", "payments", "picks", "shares", "blocks", "photos"] as const;
+const SEED_COLLECTIONS = ["likes", "passes", "matches", "messages", "reports", "payments", "picks", "shares", "blocks", "photos", "vouches"] as const;
+
+/** Aarav's vouch codes. One is spare, so an evaluator can let Vivek in from the waitlist. */
+export const DEMO_VOUCH = "AARAV-7K2P";
 
 function userFrom(p: Person, now: number, i: number): User {
   const emp = EMPLOYERS[p.emp];
-  const createdAt = now - (12 + ((i * 7) % 50)) * DAY;
+  // Waitlisted members signed up just before they joined the line.
+  const createdAt = p.wait ? now - p.wait.days * DAY - 2 * HOUR : now - (12 + ((i * 7) % 50)) * DAY;
   return {
     id: p.id,
     email: `${p.id.slice(2)}@pairwise.demo`,
     role: "member",
-    status: "active",
+    status: p.wait ? "waitlisted" : "active",
+    ...(p.wait ? { waitlist: { city: p.city, reason: p.wait.reason, joinedAt: now - p.wait.days * DAY } } : {}),
     plan: p.plus ? "plus" : "free",
     plusRenewsAt: p.plus ? now + 20 * DAY : undefined,
     birthDate: p.dob,
@@ -477,6 +483,15 @@ export function buildScenario(now: number) {
     seed: true,
   };
 
+  // ---- Vouches: Aarav vouched for Karthik; two codes are spare (one is in the evaluator guide) ----
+  byId.get("s_karthik")!.vouchedBy = "s_aarav";
+  const vouches: Vouch[] = [
+    { id: "AARAV-M4QD", by: "s_aarav", createdAt: now - 20 * DAY, usedBy: "s_karthik", usedAt: now - 19 * DAY, seed: true },
+    { id: DEMO_VOUCH, by: "s_aarav", createdAt: now - 20 * DAY + 1, seed: true },
+    { id: "AARAV-H3XW", by: "s_aarav", createdAt: now - 20 * DAY + 2, seed: true },
+  ];
+  for (const v of vouches) s.ops.push({ type: "set", col: "vouches", id: v.id, data: v });
+
   return { users: [...users, admin], ops: s.ops };
 }
 
@@ -499,6 +514,7 @@ export async function seedDemo(store: DocStore, now = Date.now(), opts: { reset?
     const byField: [string, string][] = [
       ["likes", "from"], ["likes", "to"], ["passes", "from"], ["passes", "to"], ["reports", "reported"], ["reports", "reporter"],
       ["payments", "uid"], ["picks", "uid"], ["shares", "uid"], ["blocks", "by"], ["blocks", "target"], ["photos", "owner"],
+      ["vouches", "by"], ["vouches", "usedBy"],
     ];
     const [flagged, linked, matchLists] = await Promise.all([
       Promise.all(SEED_COLLECTIONS.map(async (col) => ({ col, docs: await store.query<{ id: string }>(col, [["seed", "==", true]]) }))),

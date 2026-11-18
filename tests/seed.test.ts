@@ -74,3 +74,32 @@ describe("demo scenario", () => {
     expect((await listMatches(store, again, NOW + 2000)).active).toHaveLength(1);
   });
 });
+
+describe("demo scenario: city launch gate", () => {
+  it("Vivek waits third in Hyderabad's balance queue; Aarav's spare vouch lets him in", async () => {
+    const { waitlistView, redeemVouch, myVouches } = await import("@/lib/services/launch");
+    const { DEMO_VOUCH } = await import("@/lib/seed");
+    const store = await seeded();
+    const vivek = await login(store, "vivek@pairwise.demo", DEMO_PASSWORD);
+    const view = (await waitlistView(store, vivek))!;
+    expect(view).toMatchObject({ reason: "balance", position: 3 });
+    expect(view.city).toMatchObject({ open: true, women: 3, gatedMen: 3, womenShare: 50 });
+    const aarav = await login(store, "aarav@pairwise.demo", DEMO_PASSWORD);
+    expect((await myVouches(store, aarav, NOW)).map((v) => v.id)).toContain(DEMO_VOUCH);
+    expect(await redeemVouch(store, vivek, DEMO_VOUCH, NOW)).toEqual({ admitted: true, voucher: "Aarav" });
+  });
+
+  it("the founder can admit exactly one more man from Hyderabad before the balance tips", async () => {
+    const { admitNextBatch } = await import("@/lib/services/launch");
+    const store = await seeded();
+    expect(await admitNextBatch(store, "hyderabad", NOW)).toEqual({ admitted: 1, stillWaiting: 2 });
+    expect((await store.get<User>("users", "s_naveen"))!.status).toBe("active");
+  });
+
+  it("waitlisted members never appear in anyone's picks", async () => {
+    const store = await seeded();
+    const swathi = (await store.get<User>("users", "s_swathi"))!;
+    const picks = await todaysPicks(store, swathi, NOW);
+    expect(picks.picks.map((p) => p.card.id)).not.toContain("s_vivek");
+  });
+});

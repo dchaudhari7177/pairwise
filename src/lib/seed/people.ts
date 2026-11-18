@@ -1,5 +1,5 @@
 import { PROMPTS } from "../options";
-import type { CityId, Gender, Habits, Intent, LifePlan, PromptAnswer } from "../types";
+import type { CityId, Gender, Habits, Intent, LifePlan, PromptAnswer, WaitlistReason } from "../types";
 
 // Fictional demo members. Every person, college and employer here is made up.
 
@@ -112,6 +112,8 @@ export interface Person {
   activeDaysAgo?: number;
   hideCompany?: boolean;
   blur?: boolean;
+  /** On the waitlist (city launch gate), joined this many days ago. */
+  wait?: { reason: WaitlistReason; days: number };
 }
 
 const W: Gender[] = ["woman"];
@@ -179,4 +181,14 @@ export const PEOPLE: Person[] = [
   { id: "s_ravi", name: "Ravi", g: "man", into: W, dob: "1999-01-15", city: "hyderabad", area: "Gachibowli", home: "Nellore", role: "Backend engineer", emp: "deccan", college: 4, year: 2021, langs: ["English", "Telugu"], intent: "marriage", lp: "m2wj", hb: "nsn", values: ["Family", "Honesty", "Stability"], interests: ["Cricket", "Cooking", "Bollywood"], prompts: [28, 19, 15], bio: "Nellore boy, spicy food, steady heart.", range: [23, 29] },
   { id: "s_akash", name: "Akash", g: "man", into: W, dob: "2000-06-30", city: "hyderabad", area: "Madhapur", home: "Bhubaneswar", role: "Frontend developer", emp: "quarry", college: 2, year: 2022, langs: ["English", "Odia", "Hindi"], intent: "long_term", lp: "y4on", hb: "nsn", values: ["Curiosity", "Humour", "Kindness"], interests: ["Board games", "Football", "Puzzles"], prompts: [7, 5, 38], bio: "Odia in Hyderabad. Rasagola debates welcome.", range: [22, 29] },
   { id: "s_sandeep", name: "Sandeep", g: "man", into: W, dob: "1998-08-18", city: "hyderabad", area: "Kukatpally", home: "Karimnagar", role: "Engineering lead", emp: "orbit", college: 6, year: 2020, langs: ["English", "Telugu", "Hindi"], intent: "long_term", lp: "m4wn", hb: "nsn", values: ["Ambition", "Loyalty", "Family"], interests: ["Running", "Travel", "Podcasts"], prompts: [19, 27, 34], bio: "Lead by day, chef by weekend.", range: [23, 30] },
+
+  // ---------------- Waitlist (city launch gate) ----------------
+  // Hyderabad is open but sits at 50% women with three active men; these men wait in line.
+  { id: "s_naveen", name: "Naveen", g: "man", into: W, dob: "1999-10-04", city: "hyderabad", area: "Miyapur", home: "Warangal", role: "SRE", emp: "deccan", college: 4, year: 2021, langs: ["English", "Telugu"], intent: "long_term", lp: "m4wn", hb: "nsn", values: ["Honesty", "Growth", "Family"], interests: ["Cricket", "Trekking", "Podcasts"], prompts: [2, 9, 19], bio: "On-call by night, biryani critic by day.", range: [23, 29], wait: { reason: "balance", days: 9 } },
+  { id: "s_tarun", name: "Tarun", g: "man", into: W, dob: "2001-03-27", city: "hyderabad", area: "Hitech City", home: "Raipur", role: "Android developer", emp: "orbit", college: 2, year: 2023, langs: ["English", "Hindi"], intent: "figuring_out", lp: "y4on", hb: "nsn", values: ["Curiosity", "Humour", "Adventure"], interests: ["Gym", "Anime", "Travel"], prompts: [6, 10, 30], bio: "Raipur to Hyderabad. Still hunting for a gym buddy.", range: [21, 27], wait: { reason: "balance", days: 6 } },
+  { id: "s_vivek", name: "Vivek", g: "man", into: W, dob: "2000-08-11", city: "hyderabad", area: "Kondapur", home: "Lucknow", role: "Platform engineer", emp: "quarry", college: 0, year: 2022, langs: ["English", "Hindi", "Urdu"], intent: "long_term", lp: "m4wn", hb: "nsn", values: ["Kindness", "Honesty", "Curiosity"], interests: ["Board games", "Reading", "Cooking", "Puzzles"], prompts: [1, 7, 22], bio: "Lucknow tehzeeb, Hyderabad biryani. Will lose gracefully at Codenames.", range: [23, 29], wait: { reason: "balance", days: 2 } },
+  // Chennai isn't open yet: everyone waits, women included.
+  { id: "s_meenakshi", name: "Meenakshi", g: "woman", into: M, dob: "2000-02-14", city: "chennai", area: "Adyar", home: "Madurai", role: "Data engineer", emp: "saffron", college: 5, year: 2022, langs: ["English", "Tamil"], intent: "long_term", lp: "n4on", hb: "vnn", values: ["Family", "Kindness", "Honesty"], interests: ["Classical music", "Reading", "Cooking"], prompts: [0, 20, 14], bio: "Madurai roots, Adyar beach walks.", range: [24, 30], wait: { reason: "city_closed", days: 12 } },
+  { id: "s_gokul", name: "Gokul", g: "man", into: W, dob: "1999-12-09", city: "chennai", area: "Velachery", home: "Coimbatore", role: "Embedded engineer", emp: "nimbus", college: 3, year: 2021, langs: ["English", "Tamil"], intent: "marriage", lp: "m2wj", hb: "nsn", values: ["Stability", "Family", "Loyalty"], interests: ["Cricket", "Cooking", "Travel"], prompts: [28, 16, 21], bio: "Kovai kid. Filter coffee is non-negotiable.", range: [23, 29], wait: { reason: "city_closed", days: 8 } },
+  { id: "s_divya", name: "Divya", g: "woman", into: M, dob: "2001-06-02", city: "chennai", area: "Anna Nagar", home: "Tiruchirappalli", role: "QA analyst", emp: "monsoon", college: 7, year: 2023, langs: ["English", "Tamil", "Hindi"], intent: "long_term", lp: "y4on", hb: "nsn", values: ["Curiosity", "Humour", "Growth"], interests: ["Dancing", "Photography", "Café hopping"], prompts: [3, 13, 33], bio: "Trichy to Chennai. Weekend photowalks, weekday bugs.", range: [23, 29], wait: { reason: "city_closed", days: 4 } },
 ];
