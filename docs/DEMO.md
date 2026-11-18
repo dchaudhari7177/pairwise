@@ -44,11 +44,40 @@ Demo data resets every night at 03:00 IST, so feel free to click everything.
 - **Plus** shows the honest free vs Plus comparison, one-tap cancel, and
   **Relocation mode**: switch to Bengaluru, then check **Today**.
 
-## 4. Admin: owning the outcome (admin@pairwise.demo)
+## 4. Vivek: the city launch gate (vivek@pairwise.demo)
+
+The go-to-market plan, enforced in code.
+
+1. Log in and you land on **the waitlist**, not Today. Hyderabad is open, but
+   Vivek is **#3** in line: women are at 50%, and there's room for one more
+   man before they'd drop below 40%. That place goes to the person ahead.
+2. Enter Aarav's vouch code **`AARAV-7K2P`**. A verified member vouched, so
+   Vivek skips the queue and lands on Today.
+3. As Aarav, **Profile** shows his three vouch codes and who used each one.
+4. Or sign up fresh and pick **Chennai** (not open yet): you'll see how far the
+   city is from its 1,500-member launch line.
+
+## 5. Partner venues: how the app earns without charging members
+
+1. Open **[For venues](https://pairwise-pi.vercel.app/partners)**: pricing, the
+   first-date safety bar, and an application form. Try leaving a safety box
+   unticked.
+2. Open the **[partner counter](https://pairwise-pi.vercel.app/partners/redeem)**.
+   Pick **Dice & Deck**, PIN **`4321`**, code **`PW-7Q4M2K`** (Ananya and
+   Imran's date tonight). It redeems once; try it again.
+3. As Aarav, accepting Ishita's proposal issues a fresh perk code on the Date
+   Plan card.
+
+## 6. Admin: owning the outcome (admin@pairwise.demo)
 
 - **North star**: Weekly Meaningful Conversations.
-- **Funnel** from verified member to planned date; **women's share per city**
-  against the 40% threshold; **hypotheses H2–H6** against their targets; MRR.
+- **Funnel** from verified member to planned date; **hypotheses H2–H6**
+  against their targets.
+- **City launch control**: each city's progress to launch, women's share
+  against the 40% line, the waitlist by gender, and **Admit next batch**
+  (Hyderabad admits exactly one man, then stops).
+- **Revenue mix**: partner venues (listings plus redeemed dates) against Plus,
+  and the **venue pipeline** from the For venues form.
 - **Live experiment (H4)**: half of new matches get a Spark suggestion,
   assigned by a hash of the match id. The observational H4 row says Spark chats
   go 3× deeper. The randomised readout shows the honest picture: a wide
@@ -59,7 +88,7 @@ Demo data resets every night at 03:00 IST, so feel free to click everything.
   Suspend, warn or dismiss.
 - **Reset demo data** restores every story.
 
-## 5. A fresh account
+## 7. A fresh account
 
 Go to **Join**, then sign up (18+). On **Continue with eLitmus**, use
 `demo.candidate@elitmus.test` (or any email, then enter your record, which is
@@ -74,6 +103,8 @@ in demo mode. Then the 6-step profile, and your first picks.
 | Work-email OTP delivery | Transactional email provider |
 | Plus checkout | Razorpay Subscriptions (UPI AutoPay / e-mandate) |
 | Venues and perks | Signed partner agreements |
+| One shared venue PIN at the partner counter | A login per venue on a partner portal, with monthly GST invoices |
 
 Everything else (matching, the inbound cap, slots, Spark, Scam Shield, Date
-Plan, moderation, export and deletion, metrics) is real, working code.
+Plan, the city launch gate and vouches, perk codes and redemption, moderation,
+export and deletion, metrics) is real, working code.

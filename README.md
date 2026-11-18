@@ -46,7 +46,9 @@ sponsored puzzles), not from users' pockets.
 | `aarav@pairwise.demo` | Daily Picks, a date proposal to accept, a half-solved Spark, 3 likes |
 | `meera@pairwise.demo` | The inbound cap (10 likes now, 2 queued), Scam Shield catching a scam, close-kindly |
 | `kabir@pairwise.demo` | Plus member: 10 picks, 5 slots, Relocation mode |
-| `admin@pairwise.demo` | Founder console: north-star metric, funnel, a live A/B test, retention cohorts, moderation queue |
+| `vivek@pairwise.demo` | **Waitlisted** in Hyderabad by the gender-balance rule; Aarav's vouch code `AARAV-7K2P` lets him in |
+| `admin@pairwise.demo` | Founder console: north-star metric, funnel, city launch control, revenue mix, a live A/B test, retention cohorts, moderation queue |
+| [Partner counter](https://pairwise-pi.vercel.app/partners/redeem) | A venue redeems tonight's perk code: Dice & Deck, PIN `4321`, code `PW-7Q4M2K` |
 
 Or sign up fresh: verification uses a clearly labelled simulated eLitmus
 consent screen (try `demo.candidate@elitmus.test`). Demo data resets nightly.
@@ -61,6 +63,8 @@ The full walkthrough is in [docs/DEMO.md](docs/DEMO.md).
 | "hi" and ghosting | **Spark** co-op puzzles · **3 open slots** · **close kindly** in one tap · 7-day expiry |
 | Colleagues seeing your profile | **Hide from my verified employer and college** · **blur until match**, enforced on the server |
 | Chat that never becomes a safe date | **Date Plan**: mutual consent, public venues, share with a friend, private check-in |
+| Launching to an empty or lopsided room | **City launch gate**: a city opens at 1,500 verified members; men seeking women wait in a first-come line whenever women would drop below 40% · **3 vouches** per member are the only shortcut |
+| "Users don't want to pay" | **Partner venues pay, members don't**: a listing plus ₹50 per redeemed first date, tracked with a one-time perk code entered at the venue counter ([For venues](https://pairwise-pi.vercel.app/partners)) |
 | Gut-feel product decisions | A **randomised experiment** in the founder console (hash-assigned arms, confidence intervals, p-value, required sample size) instead of trusting a biased correlation |
 | Paywalled basics | Seeing **who liked you is free**. Plus sells convenience, never safety or visibility |
 | Caste-sorted matrimony | Values and life-plan matching; **no caste filters, by principle** |

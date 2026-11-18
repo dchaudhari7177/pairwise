@@ -80,6 +80,22 @@ blocked people disappear automatically. One `activitySeenAt` timestamp per
 member drives the badge. At scale this becomes a fan-out-on-write collection
 feeding web push; the page wouldn't change.
 
+### The launch gate is a pure function
+
+`decide(profile, market, queueLength)` in `services/launch.ts` holds the whole
+admission rule and has no I/O, so the tests can cover every branch (closed
+city, women, men seeking men, the 40% line, an existing queue) without a
+store. Waitlisted members are just `status: "waitlisted"`, and discovery
+already shows only `active` members, so no matching code had to change to
+keep them out of everyone's picks.
+
+### Perk codes are their own documents
+
+A redemption is keyed by its code, so the venue counter does a single read,
+not a search across matches. The match still holds the code, and redemption
+checks both, so a changed or cancelled date voids the code without a cleanup
+job.
+
 ### Server-enforced privacy
 - `toCard()` is the only member shape that leaves the server. It never
   includes email, birth date, consents, trust counters or the employer domain.
@@ -107,6 +123,9 @@ would prerender is tiny. Request-time rendering keeps the mental model simple.
 | `photos` | | JPEG data URLs (640px plus a 24px blur) |
 | `shares` | random token | Share-with-a-friend links with expiry |
 | `otps`, `ratelimits` | | Work-email codes (hashed), rate-limit buckets |
+| `vouches` | the code (`AARAV-7K2P`) | `by`, `usedBy`, `usedAt`: three per verified member, single use |
+| `redemptions` | the perk code (`PW-…`) | Issued when a partner-venue date is accepted; `redeemedAt` is what the venue is billed for |
+| `venueApplications` | `va_…` | From the For venues form, with the safety checklist |
 
 ## Security checklist
 
