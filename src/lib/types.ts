@@ -184,6 +184,36 @@ export interface DatePlan {
   note?: string;
   proposedAt?: number;
   respondedAt?: number;
+  /** Issued when a date at a partner venue is accepted; the venue redeems it on the day. */
+  perkCode?: string;
+}
+
+/** A partner-venue perk code. Document id is the code. Each redemption is billed to the venue. */
+export interface Redemption {
+  id: string;
+  matchId: string;
+  venueId: string;
+  /** When the date is. */
+  at: number;
+  createdAt: number;
+  redeemedAt?: number;
+  seed?: boolean;
+}
+
+/** A venue that asked to join Date Plan. Reviewed against the safety checklist before listing. */
+export interface VenueApplication {
+  id: string;
+  name: string;
+  city: CityId;
+  area: string;
+  kind: string;
+  contactName: string;
+  contactEmail: string;
+  perk: string;
+  checklist: { public: boolean; transit: boolean; staffBriefed: boolean; openLate: boolean };
+  status: "new" | "approved" | "declined";
+  createdAt: number;
+  seed?: boolean;
 }
 
 export interface Checkin {

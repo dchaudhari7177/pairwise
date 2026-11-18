@@ -5,6 +5,7 @@ import { DAY, formatIst, HOUR } from "../time";
 import type { Checkin, DatePlan, Match, Message, ShareLink, User } from "../types";
 import { getVenue } from "../venues";
 import { assertActive, loadMatch } from "./matches";
+import { issuePerk } from "./perks";
 import { assertCanInteract, newId } from "./users";
 
 /**
@@ -79,8 +80,15 @@ export async function respondToDate(store: DocStore, viewer: User, matchId: stri
   if (!m.datePlan || m.datePlan.status !== "proposed") throw badRequest("There's no proposal to respond to.");
   if (m.datePlan.proposedBy === viewer.id) throw forbidden("Waiting for them to respond.");
   const venue = getVenue(m.datePlan.venueId)!;
+  const perk = accept ? issuePerk(m, venue.id, m.datePlan.at, now) : { code: undefined, ops: [] };
   await store.batch([
-    { type: "update", col: "matches", id: matchId, patch: { "datePlan.status": accept ? "accepted" : "declined", "datePlan.respondedAt": now } },
+    {
+      type: "update",
+      col: "matches",
+      id: matchId,
+      patch: { "datePlan.status": accept ? "accepted" : "declined", "datePlan.respondedAt": now, ...(perk.code ? { "datePlan.perkCode": perk.code } : {}) },
+    },
+    ...perk.ops,
     {
       type: "set",
       col: "messages",
@@ -88,7 +96,7 @@ export async function respondToDate(store: DocStore, viewer: User, matchId: stri
       data: sys(
         matchId,
         accept
-          ? `✅ It's a date: ${venue.name}, ${formatIst(m.datePlan.at)}. Tip: share the plan with a friend from the Date Plan card.`
+          ? `✅ It's a date: ${venue.name}, ${formatIst(m.datePlan.at)}.${perk.code ? ` Show perk code ${perk.code} at the counter: ${venue.perk}.` : ""} Tip: share the plan with a friend from the Date Plan card.`
           : `${viewer.profile!.firstName} can't make that one. Suggest another time or place?`,
         now,
       ),

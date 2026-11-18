@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import type { CityId } from "./types";
 
 /**
@@ -32,6 +33,22 @@ export const VENUES: Venue[] = [
   { id: "hyd-sugarloaf", city: "hyderabad", name: "Sugarloaf Desserts", area: "Gachibowli", kind: "Dessert bar", why: "Near the IT corridor, open late, very public", partner: true, perk: "Shared dessert at 15% off" },
   { id: "hyd-kbr", city: "hyderabad", name: "KBR Park walk", area: "Jubilee Hills", kind: "Park walk", why: "Gated park with security and many walkers", partner: false },
 ];
+
+/**
+ * What partner venues pay (illustrative; see docs/MONETIZATION.md). Members
+ * never pay for perks: the venue pays for verified couples walking in.
+ */
+export const VENUE_PRICING = { listingInrPerMonth: 3000, perRedemptionInr: 50 } as const;
+
+/**
+ * Demo-grade venue authentication: one shared PIN (PARTNER_PIN, default 4321).
+ * A real launch gives each venue its own login on the partner portal.
+ */
+export function checkVenuePin(pin: string): boolean {
+  const expected = Buffer.from(process.env.PARTNER_PIN ?? "4321");
+  const given = Buffer.from(pin);
+  return given.length === expected.length && timingSafeEqual(given, expected);
+}
 
 export function getVenue(id: string): Venue | undefined {
   return VENUES.find((v) => v.id === id);
