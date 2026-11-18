@@ -1,6 +1,7 @@
 import { hashPassword, passwordProblem, verifyPassword } from "../auth/password";
 import { badRequest, conflict, forbidden, unauthorized } from "../errors";
 import { CITIES, LIMITS } from "../options";
+import { admissionPatch, decideAdmission } from "./launch";
 import type { DocStore } from "../store/types";
 import { ageFrom, HOUR } from "../time";
 import type { Credential, Match, Profile, User } from "../types";
@@ -24,6 +25,7 @@ export function assertCanInteract(user: User) {
   if (!user.verification.identity) throw forbidden("Verify your identity first. Pairwise is verified-only.", "not_verified");
   if (!user.onboarded || !user.profile) throw forbidden("Finish your profile first.", "not_onboarded");
   if (user.status === "paused") throw forbidden("Your profile is paused. Unpause it in Settings to continue.", "paused");
+  if (user.status === "waitlisted") throw forbidden("You're on the waitlist for your city. We'll let you in as soon as there's room.", "waitlisted");
   if (user.status !== "active") throw forbidden("Your account is under review.", "under_review");
 }
 
@@ -99,7 +101,8 @@ export type ProfileInput = Omit<Profile, "birthDate" | "avatarSeed" | "photoId">
 
 export function validateProfile(p: ProfileInput) {
   if (!p.firstName?.trim() || p.firstName.length > 30) throw badRequest("Add your first name.");
-  if (!CITIES[p.city]?.open) throw badRequest("We're not open in that city yet. Join the waitlist!");
+  // Closed cities are allowed: those members join the waitlist (see services/launch.ts).
+  if (!CITIES[p.city]) throw badRequest("Pick your city.");
   if (!p.interestedIn?.length) throw badRequest("Tell us who you'd like to meet.");
   if (p.ageRange[0] < 18 || p.ageRange[1] > 80 || p.ageRange[0] > p.ageRange[1]) throw badRequest("Check the age range.");
   if (p.values.length < 3 || p.values.length > 5) throw badRequest("Pick 3 to 5 values.");
@@ -122,8 +125,15 @@ export async function saveProfile(store: DocStore, user: User, input: ProfileInp
     avatarSeed: user.profile?.avatarSeed ?? user.id,
     photoId: user.profile?.photoId,
   };
-  await store.update("users", user.id, { profile, onboarded: true });
-  return profile;
+  // First-time profiles (and anyone still waiting) go through the city launch gate.
+  const gate = !user.onboarded || user.status === "waitlisted";
+  const admission = gate ? await decideAdmission(store, user, profile) : null;
+  await store.update("users", user.id, {
+    profile,
+    onboarded: true,
+    ...(admission ? admissionPatch(user, admission, profile.city, Date.now()) : {}),
+  });
+  return { profile, admission };
 }
 
 export async function updatePrivacy(store: DocStore, user: User, patch: Partial<User["privacy"]>) {
@@ -133,6 +143,7 @@ export async function updatePrivacy(store: DocStore, user: User, patch: Partial<
 }
 
 export async function setPaused(store: DocStore, user: User, paused: boolean) {
+  if (user.status === "waitlisted") throw forbidden("You're on the waitlist, so nobody can see your profile yet.");
   if (user.status !== "active" && user.status !== "paused") throw forbidden("Your account is under review.");
   await store.update("users", user.id, { status: paused ? "paused" : "active" });
 }

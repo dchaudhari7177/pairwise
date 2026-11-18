@@ -8,7 +8,7 @@ import { SettingsPanel } from "./SettingsPanel";
 export const metadata: Metadata = { title: "Settings & privacy" };
 
 export default async function SettingsPage() {
-  const { user } = await requireMember();
+  const { user } = await requireMember({ allowWaitlisted: true });
   const card = toCard(user, { self: true });
   return (
     <div>

@@ -32,12 +32,15 @@ export async function getViewer(): Promise<ViewerContext | null> {
 }
 
 /** For app pages: redirects to login, verification or onboarding as needed. */
-export async function requireMember(opts: { allowUnverified?: boolean; allowIncomplete?: boolean } = {}): Promise<ViewerContext> {
+export async function requireMember(
+  opts: { allowUnverified?: boolean; allowIncomplete?: boolean; allowWaitlisted?: boolean } = {},
+): Promise<ViewerContext> {
   const ctx = await load();
   if (!ctx) redirect("/login");
   if (ctx.user.role === "admin" && !ctx.user.profile) redirect("/admin");
   if (!opts.allowUnverified && !ctx.user.verification.identity) redirect("/join/verify");
   if (!opts.allowIncomplete && !ctx.user.onboarded) redirect("/join/profile");
+  if (!opts.allowWaitlisted && ctx.user.status === "waitlisted") redirect("/waitlist");
   return ctx;
 }
 

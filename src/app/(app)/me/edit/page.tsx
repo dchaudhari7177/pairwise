@@ -8,7 +8,7 @@ import { ageFrom } from "@/lib/time";
 export const metadata: Metadata = { title: "Edit profile" };
 
 export default async function EditProfilePage() {
-  const { user } = await requireMember();
+  const { user } = await requireMember({ allowWaitlisted: true });
   const p = user.profile!;
   const { birthDate: _b, avatarSeed: _s, photoId: _ph, ...rest } = p;
   const card = toCard(user, { self: true });
