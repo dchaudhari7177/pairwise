@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle2, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { api } from "@/lib/client/api";
 
@@ -106,7 +107,7 @@ export function ApplyForm({ cities }: { cities: { id: string; label: string }[] 
       <button className="btn btn-love w-full" disabled={busy}>
         {busy && <Loader2 className="h-4 w-4 animate-spin" />} Send application
       </button>
-      <p className="text-xs text-muted">We use these details only to contact you about listing. See our <a className="underline" href="/legal/privacy">privacy notice</a>.</p>
+      <p className="text-xs text-muted">We use these details only to contact you about listing. See our <Link className="underline" href="/legal/privacy">privacy notice</Link>.</p>
     </form>
   );
 }
