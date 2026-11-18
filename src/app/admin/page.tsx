@@ -4,6 +4,9 @@ import { Avatar } from "@/components/Portrait";
 import { requireAdmin } from "@/lib/server/viewer";
 import { LAUNCH, launchBoard, type CityLaunch } from "@/lib/services/launch";
 import { computeMetrics, type Metrics } from "@/lib/services/metrics";
+import { listApplications, venueRevenue } from "@/lib/services/perks";
+import type { VenueApplication } from "@/lib/types";
+import { CITIES } from "@/lib/options";
 import { listReports } from "@/lib/services/moderation";
 import { timeAgo } from "@/lib/time";
 import { AdmitButton, ConsoleActions, ResolveButtons } from "./AdminActions";
@@ -148,6 +151,72 @@ function CityLaunchCard({ board }: { board: CityLaunch[] }) {
   );
 }
 
+function RevenueMix({ plusMrr, plusMembers, venues }: { plusMrr: number; plusMembers: number; venues: Awaited<ReturnType<typeof venueRevenue>> }) {
+  const rows = [
+    { label: "Partner venues: listings", value: venues.listing, sub: `${venues.partners} venues × ₹3,000` },
+    { label: "Partner venues: redeemed dates", value: venues.perRedemption, sub: `${venues.redeemed30} perks redeemed × ₹50 (last 30 days)` },
+    { label: "Pairwise Plus", value: plusMrr, sub: `${plusMembers} members` },
+  ];
+  const total = Math.max(1, rows.reduce((n, r) => n + r.value, 0));
+  return (
+    <div className="card p-6">
+      <h2 className="text-xl font-semibold">Revenue mix: who pays</h2>
+      <p className="mt-1 text-sm text-ink-2">
+        The plan is that businesses pay most of the bill so members don&apos;t have to. If Plus ever dominates, we&apos;re drifting toward
+        squeezing users. Venue fees are illustrative pilot pricing.
+      </p>
+      <div className="mt-5 flex h-3 overflow-hidden rounded-full bg-paper-2" role="img" aria-label="Revenue split">
+        {rows.map((r, i) => (
+          <div key={r.label} className={i === 2 ? "bg-plum" : i === 1 ? "bg-rose/60" : "bg-rose"} style={{ width: `${(r.value / total) * 100}%` }} />
+        ))}
+      </div>
+      <dl className="mt-5 space-y-3 text-sm">
+        {rows.map((r, i) => (
+          <div key={r.label} className="flex items-start justify-between gap-3">
+            <dt className="flex items-start gap-2">
+              <span className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${i === 2 ? "bg-plum" : i === 1 ? "bg-rose/60" : "bg-rose"}`} />
+              <span>
+                {r.label}
+                <span className="block text-xs text-muted">{r.sub}</span>
+              </span>
+            </dt>
+            <dd className="font-semibold">
+              ₹{r.value.toLocaleString("en-IN")} <span className="font-normal text-muted">{Math.round((r.value / total) * 100)}%</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <p className="mt-4 text-xs text-muted">{venues.issued} perk codes issued so far. Each one is a planned date at a partner venue.</p>
+    </div>
+  );
+}
+
+function VenuePipeline({ apps }: { apps: VenueApplication[] }) {
+  return (
+    <div className="card p-6">
+      <h2 className="text-xl font-semibold">Venue pipeline</h2>
+      <p className="mt-1 text-sm text-ink-2">Applications from the For venues page. A city lead visits before any venue is listed.</p>
+      <ul className="mt-4 divide-y divide-line">
+        {apps.slice(0, 6).map((a) => (
+          <li key={a.id} className="flex items-start justify-between gap-3 py-3 text-sm">
+            <div>
+              <p className="font-medium">{a.name}</p>
+              <p className="text-xs text-muted">
+                {a.kind} · {a.area}, {CITIES[a.city].label} · {a.contactName}
+              </p>
+              <p className="mt-0.5 text-xs text-amber">🎁 {a.perk}</p>
+            </div>
+            <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${CITIES[a.city].open ? "bg-sage-soft text-sage" : "bg-paper-2 text-ink-2"}`}>
+              {CITIES[a.city].open ? "Visit to book" : "City not open"}
+            </span>
+          </li>
+        ))}
+      </ul>
+      {apps.length === 0 && <p className="mt-4 text-sm text-muted">No applications yet.</p>}
+    </div>
+  );
+}
+
 function CohortTable({ cohorts }: { cohorts: Metrics["cohorts"] }) {
   const weeks = cohorts[0]?.weeks.length ?? 5;
   return (
@@ -202,7 +271,13 @@ function CohortTable({ cohorts }: { cohorts: Metrics["cohorts"] }) {
 
 export default async function AdminPage() {
   const { store, user } = await requireAdmin();
-  const [m, reports, board] = await Promise.all([computeMetrics(store, user), listReports(store, user), launchBoard(store)]);
+  const [m, reports, board, venues, applications] = await Promise.all([
+    computeMetrics(store, user),
+    listReports(store, user),
+    launchBoard(store),
+    venueRevenue(store),
+    listApplications(store),
+  ]);
   const open = reports.filter((r) => r.status === "open");
   const resolved = reports.filter((r) => r.status === "resolved").slice(0, 5);
   const maxFunnel = Math.max(1, m.funnel[0].value);
@@ -231,7 +306,12 @@ export default async function AdminPage() {
         </div>
         <Stat icon={Users} label="Verified members" value={m.totals.verified} sub={`${m.totals.verifiedShare}% of sign-ups verified`} />
         <Stat icon={MessagesSquare} label="Active conversations" value={m.totals.activeConversations} sub={`${m.totals.matches} matches · ${m.totals.likeToMatch}% of likes become matches`} />
-        <Stat icon={IndianRupee} label="MRR (Plus)" value={`₹${m.revenue.mrr.toLocaleString("en-IN")}`} sub={`${m.revenue.plusMembers} members · ${m.revenue.plusShare}% conversion · ₹${m.revenue.revenue30.toLocaleString("en-IN")} last 30d`} />
+        <Stat
+          icon={IndianRupee}
+          label="Monthly revenue"
+          value={`₹${(m.revenue.mrr + venues.total30).toLocaleString("en-IN")}`}
+          sub={`${Math.round((venues.total30 / Math.max(1, m.revenue.mrr + venues.total30)) * 100)}% from venues · ₹${m.revenue.mrr.toLocaleString("en-IN")} Plus MRR (${m.revenue.plusShare}% convert)`}
+        />
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
@@ -257,6 +337,11 @@ export default async function AdminPage() {
         </div>
 
         <CityLaunchCard board={board} />
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-2">
+        <RevenueMix plusMrr={m.revenue.mrr} plusMembers={m.revenue.plusMembers} venues={venues} />
+        <VenuePipeline apps={applications} />
       </section>
 
       {/* Hypotheses */}
