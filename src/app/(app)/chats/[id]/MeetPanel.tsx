@@ -121,6 +121,15 @@ export function MeetPanel({ convo, venues, onChange }: { convo: Conversation; ve
               {plan.venue?.kind}, {plan.venue?.area} · {formatIst(plan.at)}
             </p>
             {plan.venue?.perk && <p className="mt-2 text-sm text-amber">🎁 {plan.venue.perk}</p>}
+            {plan.status === "accepted" && plan.perkCode && !past && (
+              <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-dashed border-rose/40 bg-rose-soft/40 px-4 py-3">
+                <div>
+                  <p className="text-xs text-ink-2">Show this at the counter on the day</p>
+                  <p className="font-mono text-lg font-semibold tracking-widest text-rose-2">{plan.perkCode}</p>
+                </div>
+                <p className="max-w-[9rem] text-right text-[11px] leading-tight text-muted">Free for you. The venue pays us, not you.</p>
+              </div>
+            )}
 
             {plan.status === "proposed" && !plan.proposedByMe && (
               <div className="mt-4 flex gap-3">
