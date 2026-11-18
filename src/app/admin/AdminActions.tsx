@@ -62,3 +62,31 @@ export function ConsoleActions() {
     </div>
   );
 }
+
+export function AdmitButton({ city }: { city: string }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  return (
+    <span className="flex items-center gap-2">
+      {msg && <span className="text-sage">{msg}</span>}
+      <button
+        className="btn btn-ghost btn-sm"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          try {
+            const r = await api<{ admitted: number; stillWaiting: number }>(`/api/admin/cities/${city}/admit`, { body: {} });
+            setMsg(r.admitted ? `Admitted ${r.admitted} · ${r.stillWaiting} still waiting` : "Balance is at the limit: nobody admitted");
+            router.refresh();
+          } catch (e) {
+            setMsg((e as Error).message);
+          }
+          setBusy(false);
+        }}
+      >
+        {busy && <Loader2 className="h-3 w-3 animate-spin" />} Admit next batch
+      </button>
+    </span>
+  );
+}

@@ -2,10 +2,11 @@ import { AlertTriangle, CheckCircle2, FlaskConical, IndianRupee, MessagesSquare,
 import type { Metadata } from "next";
 import { Avatar } from "@/components/Portrait";
 import { requireAdmin } from "@/lib/server/viewer";
+import { LAUNCH, launchBoard, type CityLaunch } from "@/lib/services/launch";
 import { computeMetrics, type Metrics } from "@/lib/services/metrics";
 import { listReports } from "@/lib/services/moderation";
 import { timeAgo } from "@/lib/time";
-import { ConsoleActions, ResolveButtons } from "./AdminActions";
+import { AdmitButton, ConsoleActions, ResolveButtons } from "./AdminActions";
 
 export const metadata: Metadata = { title: "Founder console" };
 
@@ -105,6 +106,48 @@ function ExperimentCard({ e }: { e: Metrics["experiment"] }) {
   );
 }
 
+function CityLaunchCard({ board }: { board: CityLaunch[] }) {
+  const minShare = LAUNCH.minWomenShare * 100;
+  return (
+    <div className="card p-6">
+      <h2 className="text-xl font-semibold">City launch control</h2>
+      <p className="mt-1 text-sm text-ink-2">
+        A city opens at {LAUNCH.minVerified.toLocaleString("en-IN")} verified members (about {Math.round(LAUNCH.minVerified * LAUNCH.compatibleFraction)} compatible
+        people each). In open cities, men seeking women are let in from the waitlist only while women stay at {minShare}% or more.
+      </p>
+      <div className="mt-5 space-y-4">
+        {board.map((c) => (
+          <div key={c.city} className="rounded-2xl border border-line p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+              <span className="flex items-center gap-2 font-medium">
+                {c.label}
+                <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${c.open ? "bg-sage-soft text-sage" : "bg-paper-2 text-ink-2"}`}>
+                  {c.open ? "Open" : c.ready ? "Ready to open" : `${c.progress}% to launch`}
+                </span>
+              </span>
+              <span className={c.womenShare >= minShare ? "text-sage" : "text-amber"}>
+                {c.womenShare}% women · {c.open ? `${c.active} active` : `${c.verified} verified`}
+              </span>
+            </div>
+            <div className="relative mt-2 h-2.5 overflow-hidden rounded-full bg-paper-2" role="img" aria-label={`${c.womenShare}% women; threshold ${minShare}%`}>
+              <div className="h-full rounded-full bg-sage" style={{ width: `${c.womenShare}%` }} />
+              <span className="absolute inset-y-0 w-0.5 bg-ink/40" style={{ left: `${minShare}%` }} title={`${minShare}% threshold`} />
+            </div>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
+              <span>
+                Waitlist: {c.waitlist.total}
+                {c.waitlist.total > 0 && ` (${c.waitlist.women} women, ${c.waitlist.men} men${c.waitlist.vouched ? `, ${c.waitlist.vouched} vouched` : ""})`}
+                {c.open && ` · pool ≈ ${c.pool} each · ${c.daysOfPicks} days of picks`}
+              </span>
+              {c.open && c.waitlist.total > 0 && <AdmitButton city={c.city} />}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function CohortTable({ cohorts }: { cohorts: Metrics["cohorts"] }) {
   const weeks = cohorts[0]?.weeks.length ?? 5;
   return (
@@ -159,7 +202,7 @@ function CohortTable({ cohorts }: { cohorts: Metrics["cohorts"] }) {
 
 export default async function AdminPage() {
   const { store, user } = await requireAdmin();
-  const [m, reports] = await Promise.all([computeMetrics(store, user), listReports(store, user)]);
+  const [m, reports, board] = await Promise.all([computeMetrics(store, user), listReports(store, user), launchBoard(store)]);
   const open = reports.filter((r) => r.status === "open");
   const resolved = reports.filter((r) => r.status === "resolved").slice(0, 5);
   const maxFunnel = Math.max(1, m.funnel[0].value);
@@ -213,27 +256,7 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        {/* Gender balance */}
-        <div className="card p-6">
-          <h2 className="text-xl font-semibold">Market health: share of women by city</h2>
-          <p className="mt-1 text-sm text-ink-2">A city opens to men from the waitlist only while women stay at 40% or more. A two-sided market dies if this slips.</p>
-          <div className="mt-5 space-y-4">
-            {m.cities.map((c) => (
-              <div key={c.city}>
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium">{c.label}</span>
-                  <span className={c.womenShare >= 40 ? "text-sage" : "text-amber"}>
-                    {c.womenShare}% women · {c.members} members
-                  </span>
-                </div>
-                <div className="relative mt-1 h-2.5 overflow-hidden rounded-full bg-paper-2">
-                  <div className="h-full rounded-full bg-sage" style={{ width: `${c.womenShare}%` }} />
-                  <span className="absolute inset-y-0 left-[40%] w-0.5 bg-ink/40" title="40% threshold" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <CityLaunchCard board={board} />
       </section>
 
       {/* Hypotheses */}
