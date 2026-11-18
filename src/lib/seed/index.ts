@@ -1,10 +1,13 @@
+import { createHash } from "node:crypto";
 import { hashPassword } from "../auth/password";
 import { assignArm, SPARK_NUDGE, SPARK_NUDGE_TEXT } from "../experiments";
 import { evaluate } from "../safety/scam-shield";
 import { getPuzzle } from "../spark/puzzles";
 import type { DocStore, WriteOp } from "../store/types";
 import { addDays, DAY, HOUR, istDay, istDayStart, isoWeek } from "../time";
-import type { Credential, Like, Match, Message, Payment, Report, User, Vouch } from "../types";
+import type { Credential, Like, Match, Message, Payment, Redemption, Report, User, VenueApplication, Vouch } from "../types";
+import { getVenue } from "../venues";
+import { newPerkCode } from "../services/perks";
 import { answer, COLLEGES, EMPLOYERS, habits, lifePlan, PEOPLE, type Person } from "./people";
 
 /**
@@ -34,10 +37,12 @@ export const DEMO_ACCOUNTS = [
   { email: "admin@pairwise.demo", uid: "s_admin", label: "Founder / admin", story: "Metrics dashboard and moderation queue" },
 ];
 
-const SEED_COLLECTIONS = ["likes", "passes", "matches", "messages", "reports", "payments", "picks", "shares", "blocks", "photos", "vouches"] as const;
+const SEED_COLLECTIONS = ["likes", "passes", "matches", "messages", "reports", "payments", "picks", "shares", "blocks", "photos", "vouches", "redemptions", "venueApplications"] as const;
 
 /** Aarav's vouch codes. One is spare, so an evaluator can let Vivek in from the waitlist. */
 export const DEMO_VOUCH = "AARAV-7K2P";
+/** Tonight's date at Dice & Deck (Ananya and Imran): redeem it at /partners/redeem with PIN 4321. */
+export const DEMO_PERK = "PW-7Q4M2K";
 
 function userFrom(p: Person, now: number, i: number): User {
   const emp = EMPLOYERS[p.emp];
@@ -363,6 +368,9 @@ export function buildScenario(now: number) {
   });
   bg("s_ananya", "s_imran", 5 * DAY, 12, {
     spark: { puzzleId: "playlist", startedBy: "s_imran", startedAt: past(5), roles: { s_imran: "A", s_ananya: "B" }, attempts: 2, solvedAt: past(5) + 14 * 60000, played: ["playlist"] },
+    // Tonight at a partner venue: its perk code is in the evaluator guide, so the partner counter can be tried today.
+    meetReady: { s_ananya: true, s_imran: true },
+    datePlan: { venueId: "blr-dicedeck", at: istDayStart(today) + 19.5 * HOUR, proposedBy: "s_imran", status: "accepted", perkCode: DEMO_PERK },
   });
   bg("s_nandini", "s_karthik", 6 * DAY, 18, {
     meetReady: { s_nandini: true, s_karthik: true },
@@ -482,6 +490,25 @@ export function buildScenario(now: number) {
     exposure: { week: "", count: 0 },
     seed: true,
   };
+
+  // ---- Partner perks: every accepted date at a partner venue has a code; past ones were redeemed ----
+  for (const op of s.ops) {
+    if (op.type !== "set" || op.col !== "matches") continue;
+    const m = op.data as Match;
+    if (m.datePlan?.status !== "accepted" || !getVenue(m.datePlan.venueId)?.partner) continue;
+    const code = m.datePlan.perkCode ?? newPerkCode(createHash("sha256").update(m.id).digest().subarray(0, 6));
+    m.datePlan.perkCode = code;
+    const redeemedAt = m.datePlan.at + HOUR < now ? m.datePlan.at + HOUR : undefined;
+    const r: Redemption = { id: code, matchId: m.id, venueId: m.datePlan.venueId, at: m.datePlan.at, createdAt: m.datePlan.at - 2 * DAY, ...(redeemedAt ? { redeemedAt } : {}), seed: true };
+    s.ops.push({ type: "set", col: "redemptions", id: code, data: r });
+  }
+
+  // ---- Venue applications waiting for the city team ----
+  const apps: VenueApplication[] = [
+    { id: "va_seed_1", name: "Kaapi Katte", city: "bengaluru", area: "Jayanagar", kind: "Café", contactName: "Rekha S", contactEmail: "rekha@kaapikatte.test", perk: "Free Mysore pak with two coffees", checklist: { public: true, transit: true, staffBriefed: true, openLate: true }, status: "new", createdAt: now - 2 * DAY, seed: true },
+    { id: "va_seed_2", name: "Marina Reads", city: "chennai", area: "Besant Nagar", kind: "Bookstore café", contactName: "Arun K", contactEmail: "arun@marinareads.test", perk: "10% off books bought together", checklist: { public: true, transit: true, staffBriefed: true, openLate: false }, status: "new", createdAt: now - 5 * DAY, seed: true },
+  ];
+  for (const a of apps) s.ops.push({ type: "set", col: "venueApplications", id: a.id, data: a });
 
   // ---- Vouches: Aarav vouched for Karthik; two codes are spare (one is in the evaluator guide) ----
   byId.get("s_karthik")!.vouchedBy = "s_aarav";

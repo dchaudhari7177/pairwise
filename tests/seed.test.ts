@@ -103,3 +103,15 @@ describe("demo scenario: city launch gate", () => {
     expect(picks.picks.map((p) => p.card.id)).not.toContain("s_vivek");
   });
 });
+
+describe("demo scenario: partner venues", () => {
+  it("tonight's Dice & Deck code redeems today; past partner dates are already billed", async () => {
+    const { redeemPerk, venueRevenue } = await import("@/lib/services/perks");
+    const { DEMO_PERK } = await import("@/lib/seed");
+    const store = await seeded();
+    const before = await venueRevenue(store, NOW);
+    expect(before.redeemed30).toBe(3);
+    expect(await redeemPerk(store, "blr-dicedeck", DEMO_PERK, NOW)).toMatchObject({ ok: true, venue: "Dice & Deck" });
+    expect((await venueRevenue(store, NOW)).redeemed30).toBe(4);
+  });
+});
