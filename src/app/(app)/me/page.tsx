@@ -1,4 +1,4 @@
-import { CheckCircle2, Circle, Crown, Pencil, Settings } from "lucide-react";
+import { CheckCircle2, Circle, Crown, HandHeart, Pencil, Settings } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Badges, VerifiedTick } from "@/components/Badges";
@@ -6,13 +6,17 @@ import { Avatar } from "@/components/Portrait";
 import { ProfileView } from "@/components/ProfileView";
 import { CITIES, INTENTS } from "@/lib/options";
 import { requireMember } from "@/lib/server/viewer";
+import { LAUNCH, myVouches, vouchUsers } from "@/lib/services/launch";
 import { toCard } from "@/lib/services/profiles";
+import { CopyCode } from "./VouchCodes";
 
 export const metadata: Metadata = { title: "My profile" };
 
 export default async function MePage() {
-  const { user } = await requireMember();
+  const { store, user } = await requireMember();
   const card = toCard(user, { self: true });
+  const vouches = await myVouches(store, user);
+  const vouchedNames = await vouchUsers(store, vouches);
   const p = user.profile!;
   const checks = [
     { done: !!p.photoId, label: "Add a photo", hint: "Optional. Until then you show an illustrated portrait." },
@@ -110,6 +114,29 @@ export default async function MePage() {
           </Link>
         </section>
       </div>
+
+      {vouches.length > 0 && (
+        <section className="card mt-5 p-5">
+          <p className="flex items-center gap-2 font-semibold">
+            <HandHeart className="h-4 w-4 text-rose" /> Vouch for a friend
+          </p>
+          <p className="mt-1 text-sm text-ink-2">
+            You have {LAUNCH.vouchesPerMember} codes. A friend on the waitlist can use one to skip the balance queue (or be first in line when their
+            city opens). Only vouch for people you&apos;d introduce to your sister or best friend: your name sits next to theirs.
+          </p>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-3">
+            {vouches.map((v) => (
+              <li key={v.id} className={`flex items-center justify-between rounded-2xl border border-line px-3 py-2 ${v.usedBy ? "bg-paper-2/60" : ""}`}>
+                <span>
+                  <span className={`font-mono text-sm font-semibold tracking-wider ${v.usedBy ? "text-muted line-through" : ""}`}>{v.id}</span>
+                  <span className="block text-xs text-muted">{v.usedBy ? `Used by ${vouchedNames.get(v.usedBy) ?? "a friend"}` : "Unused"}</span>
+                </span>
+                {!v.usedBy && <CopyCode code={v.id} />}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="mb-4 mt-10 flex items-center gap-3">
         <h2 className="text-2xl font-semibold">How others see you</h2>
