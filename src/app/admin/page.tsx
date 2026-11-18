@@ -128,19 +128,20 @@ function CityLaunchCard({ board }: { board: CityLaunch[] }) {
                   {c.open ? "Open" : c.ready ? "Ready to open" : `${c.progress}% to launch`}
                 </span>
               </span>
-              <span className={c.womenShare >= minShare ? "text-sage" : "text-amber"}>
-                {c.womenShare}% women · {c.open ? `${c.active} active` : `${c.verified} verified`}
+              <span className={c.verified === 0 ? "text-muted" : c.womenShare >= minShare ? "text-sage" : "text-amber"}>
+                {c.verified === 0 ? "No sign-ups yet" : `${c.womenShare}% women · ${c.open ? `${c.active} active` : `${c.verified} verified`}`}
               </span>
             </div>
             <div className="relative mt-2 h-2.5 overflow-hidden rounded-full bg-paper-2" role="img" aria-label={`${c.womenShare}% women; threshold ${minShare}%`}>
-              <div className="h-full rounded-full bg-sage" style={{ width: `${c.womenShare}%` }} />
+              <div className="h-full rounded-full bg-sage" style={{ width: `${c.verified === 0 ? 0 : c.womenShare}%` }} />
               <span className="absolute inset-y-0 w-0.5 bg-ink/40" style={{ left: `${minShare}%` }} title={`${minShare}% threshold`} />
             </div>
             <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
               <span>
                 Waitlist: {c.waitlist.total}
-                {c.waitlist.total > 0 && ` (${c.waitlist.women} women, ${c.waitlist.men} men${c.waitlist.vouched ? `, ${c.waitlist.vouched} vouched` : ""})`}
-                {c.open && ` · pool ≈ ${c.pool} each · ${c.daysOfPicks} days of picks`}
+                {c.waitlist.total > 0 && ` (${c.waitlist.women} ${c.waitlist.women === 1 ? "woman" : "women"}, ${c.waitlist.men} ${c.waitlist.men === 1 ? "man" : "men"}${c.waitlist.vouched ? `, ${c.waitlist.vouched} vouched` : ""})`}
+                {c.open && ` · pool ≈ ${c.pool} each · ${c.daysOfPicks} ${c.daysOfPicks === 1 ? "day" : "days"} of picks`}
+                {c.open && c.room > 0 && c.waitlist.men > 0 && ` · room for ${c.room} more`}
               </span>
               {c.open && c.waitlist.total > 0 && <AdmitButton city={c.city} />}
             </div>
@@ -153,7 +154,7 @@ function CityLaunchCard({ board }: { board: CityLaunch[] }) {
 
 function RevenueMix({ plusMrr, plusMembers, venues }: { plusMrr: number; plusMembers: number; venues: Awaited<ReturnType<typeof venueRevenue>> }) {
   const rows = [
-    { label: "Partner venues: listings", value: venues.listing, sub: `${venues.partners} venues × ₹3,000` },
+    { label: "Partner venues: listings", value: venues.listing, sub: `${venues.partners} venues × ₹3,000 a month, after a free first month` },
     { label: "Partner venues: redeemed dates", value: venues.perRedemption, sub: `${venues.redeemed30} perks redeemed × ₹50 (last 30 days)` },
     { label: "Pairwise Plus", value: plusMrr, sub: `${plusMembers} members` },
   ];
