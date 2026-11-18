@@ -34,7 +34,7 @@ export const DEMO_ACCOUNTS = [
   { email: "meera@pairwise.demo", uid: "s_meera", label: "Meera, 25, Bengaluru", story: "Sees the inbound cap, Scam Shield and Close-kindly in action" },
   { email: "kabir@pairwise.demo", uid: "s_kabir", label: "Kabir, 27, Pune (Plus)", story: "Plus member: 10 picks, 5 slots, relocation mode" },
   { email: "vivek@pairwise.demo", uid: "s_vivek", label: "Vivek, 26, Hyderabad (waitlisted)", story: "Waiting for the gender balance; Aarav's vouch code lets him in" },
-  { email: "admin@pairwise.demo", uid: "s_admin", label: "Founder / admin", story: "Metrics dashboard and moderation queue" },
+  { email: "admin@pairwise.demo", uid: "s_admin", label: "Founder / admin", story: "Metrics, city launch control, revenue mix and moderation" },
 ];
 
 const SEED_COLLECTIONS = ["likes", "passes", "matches", "messages", "reports", "payments", "picks", "shares", "blocks", "photos", "vouches", "redemptions", "venueApplications"] as const;
