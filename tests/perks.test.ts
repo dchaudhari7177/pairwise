@@ -73,3 +73,38 @@ describe("partner perks", () => {
     expect(inWindow(SAT_6PM, SAT_6PM + 23 * HOUR)).toBe(true);
   });
 });
+
+describe("venue applications", () => {
+  const base = {
+    name: "Chai Point Social",
+    city: "bengaluru" as const,
+    area: "Jayanagar",
+    kind: "Café",
+    contactName: "Rekha S",
+    contactEmail: "rekha@chaipoint.test",
+    perk: "Free biscuits with two chais",
+    checklist: { public: true, transit: true, staffBriefed: true, openLate: false },
+  };
+
+  it("accepts venues that pass the safety checklist", async () => {
+    const { applyAsVenue, listApplications } = await import("@/lib/services/perks");
+    const store = new MemoryStore();
+    await applyAsVenue(store, base, NOW);
+    expect(await listApplications(store)).toMatchObject([{ name: "Chai Point Social", status: "new" }]);
+  });
+
+  it("says no up front to venues that can't keep a first date safe", async () => {
+    const { applyAsVenue } = await import("@/lib/services/perks");
+    const store = new MemoryStore();
+    await expect(applyAsVenue(store, { ...base, checklist: { ...base.checklist, staffBriefed: false } }, NOW)).rejects.toThrow(/required/);
+  });
+
+  it("bills listings plus redemptions in the last 30 days", async () => {
+    const { venueRevenue } = await import("@/lib/services/perks");
+    const { store, code } = await dateAt("blr-dicedeck");
+    await redeemPerk(store, "blr-dicedeck", code!, SAT_6PM);
+    const r = await venueRevenue(store, SAT_6PM + HOUR);
+    expect(r).toMatchObject({ issued: 1, redeemed30: 1, perRedemption: 50 });
+    expect(r.listing).toBe(r.partners * 3000);
+  });
+});

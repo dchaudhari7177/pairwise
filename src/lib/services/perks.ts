@@ -2,8 +2,8 @@ import { randomBytes } from "node:crypto";
 import { badRequest, forbidden, notFound } from "../errors";
 import type { DocStore } from "../store/types";
 import { DAY, istDay } from "../time";
-import type { Match, Redemption } from "../types";
-import { getVenue, VENUE_PRICING } from "../venues";
+import type { Match, Redemption, VenueApplication } from "../types";
+import { getVenue, VENUE_PRICING, VENUES } from "../venues";
 
 // Partner-venue perks: the revenue line that lets members use Pairwise free.
 //
@@ -52,4 +52,48 @@ export async function redeemPerk(store: DocStore, venueId: string, raw: string, 
   }
   await store.update("redemptions", code, { redeemedAt: now });
   return { ok: true, venue: venue.name, perk: venue.perk, feeInr: VENUE_PRICING.perRedemptionInr };
+}
+
+// ---------------------------------------------------------------------------
+// Venue applications: how the supply side of Date Plan grows.
+
+export interface ApplicationInput {
+  name: string;
+  city: VenueApplication["city"];
+  area: string;
+  kind: string;
+  contactName: string;
+  contactEmail: string;
+  perk: string;
+  checklist: VenueApplication["checklist"];
+}
+
+/**
+ * Every listed venue must pass the first-date safety checklist. Rather than
+ * accept and quietly reject later, we say no up front and explain why.
+ */
+export async function applyAsVenue(store: DocStore, input: ApplicationInput, now = Date.now()) {
+  const c = input.checklist;
+  if (!c.public || !c.transit || !c.staffBriefed) {
+    throw badRequest("Date Plan only lists busy public places near transport, with staff who know what to do if a guest feels unsafe. Those three are required.");
+  }
+  if (!input.perk.trim()) throw badRequest("Offer Pairwise couples a small perk. It's what brings them to you.");
+  const app: VenueApplication = { id: `va_${now.toString(36)}${randomBytes(3).toString("hex")}`, ...input, status: "new", createdAt: now };
+  await store.set("venueApplications", app.id, app);
+  return { ok: true, id: app.id };
+}
+
+export async function listApplications(store: DocStore) {
+  const apps = await store.query<VenueApplication>("venueApplications");
+  return apps.sort((a, b) => b.createdAt - a.createdAt);
+}
+
+/** B2B revenue for the founder console: listing fees plus redeemed perks. */
+export async function venueRevenue(store: DocStore, now = Date.now()) {
+  const partners = VENUES.filter((v) => v.partner).length;
+  const all = await store.query<Redemption>("redemptions");
+  const redeemed30 = all.filter((r) => r.redeemedAt && r.redeemedAt >= now - 30 * DAY).length;
+  const listing = partners * VENUE_PRICING.listingInrPerMonth;
+  const perRedemption = redeemed30 * VENUE_PRICING.perRedemptionInr;
+  return { partners, issued: all.length, redeemed30, listing, perRedemption, total30: listing + perRedemption };
 }
