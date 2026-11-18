@@ -79,7 +79,9 @@ export interface Consents {
   at: number;
 }
 
-export type UserStatus = "active" | "paused" | "under_review" | "suspended";
+export type UserStatus = "active" | "paused" | "under_review" | "suspended" | "waitlisted";
+/** Why someone is waiting: their city isn't open yet, or admitting them would tip the gender balance. */
+export type WaitlistReason = "city_closed" | "balance";
 export type Plan = "free" | "plus";
 
 export interface User {
@@ -106,7 +108,22 @@ export interface User {
   trust: { scamFlags: number; reportsAgainst: number; warnings: number };
   /** Shown-in-picks counter, used to spread exposure fairly. */
   exposure: { week: string; count: number };
+  /** Set while status is "waitlisted". */
+  waitlist?: { city: CityId; reason: WaitlistReason; joinedAt: number };
+  /** The verified member who vouched for this person, if any. */
+  vouchedBy?: string;
+  admittedAt?: number;
   /** Marks demo-scenario documents so the nightly reset can find them. */
+  seed?: boolean;
+}
+
+/** A one-time code a verified member gives a friend. Document id is the code. */
+export interface Vouch {
+  id: string;
+  by: string;
+  createdAt: number;
+  usedBy?: string;
+  usedAt?: number;
   seed?: boolean;
 }
 
