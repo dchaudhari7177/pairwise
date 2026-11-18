@@ -26,7 +26,7 @@
 | Lever | Detail |
 |---|---|
 | Invitation | One-time email and dashboard banner from eLitmus to Bengaluru-based 2020–23 candidates with marketing consent |
-| Waves | Women first; men from a waitlist, skipping the queue with a vouch from a verified member |
+| Waves | Women first; men from a waitlist, skipping the queue with a vouch from a verified member. **Built:** `src/lib/services/launch.ts`, the `/waitlist` screen and City launch control in the founder console |
 | Threshold | Open when there are about 1,500 verified members and 40% or more are women |
 | Founding cohort | Founding-member badge, direct line to the team, 20 user interviews a week |
 | Measurement | Founder console: WMC (north star), H2–H6, the women's share |

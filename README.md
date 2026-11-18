@@ -88,7 +88,7 @@ Every decision, with its trade-off, is in the [founder's notes](docs/PRODUCT.md)
 - **Firestore** (pilot in `nam5`; launch target `asia-south1`, Mumbai) through a tiny `DocStore` interface; an
   **in-memory store** for tests and zero-setup local runs
 - **Zod** validation, **jose** JWT sessions, **scrypt** password hashing
-- **Vitest**: 113 tests over the matching engine, Scam Shield, Spark (every
+- **Vitest**: 144 tests over the matching engine, Scam Shield, Spark (every
   puzzle brute-forced for a unique answer) and all services
 - **Vercel** (functions in `iad1`, next to the database) with a nightly cron that resets the demo scenario
 
@@ -114,7 +114,7 @@ Requires Node 20.9+.
 ```bash
 npm install
 npm run dev        # http://localhost:3000, auto-seeds the demo scenario, no setup needed
-npm test           # 113 tests
+npm test           # 144 tests
 npm run lint && npm run typecheck && npm run build
 ```
 

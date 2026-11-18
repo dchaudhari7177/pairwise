@@ -34,6 +34,21 @@
   perks, events. It's also the step where members most need help, which
   lines up revenue with the outcome.
 
+### What's built
+
+The venue line works end to end, not just on paper:
+
+1. Accepting a date at a partner venue issues a one-time perk code (`PW-…`)
+   on the Date Plan card.
+2. The venue enters it at `/partners/redeem` on the day of the date. It works
+   once, only at that venue, and is void if the date was changed or cancelled.
+3. Each redemption is a billable event (₹50), on top of the monthly listing.
+4. Venues apply at `/partners`, which refuses venues that fail the first-date
+   safety checklist up front.
+5. The founder console shows the **revenue mix**, venues against Plus. If Plus
+   ever dominates, that's the warning sign that we're drifting toward
+   squeezing users.
+
 ## Unit economics (illustrative, one mature city)
 
 Assumptions: 30,000 verified members, 15,000 monthly active, 4% of MAU on

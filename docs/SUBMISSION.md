@@ -12,6 +12,7 @@ PHASE 0 · Bengaluru closed beta (weeks 0–6)
 • eLitmus sends a one-time, opt-in invitation to Bengaluru-based candidates who agreed to receive updates. Nothing is migrated: people sign up fresh and verify with consent, which respects the DPDP Act's purpose limitation.
 • Women are invited first. Men join from a waitlist as the gender balance allows, and can skip the queue if a verified member vouches for them.
 • A city opens only at a liquidity threshold: about 1,500 verified members with 40% or more women. The maths: after orientation (~½), age range (~40%) and intent compatibility (~80%), that gives each person about 240 compatible profiles, roughly seven weeks of 5-a-day picks without repeats. We never launch to an empty room.
+• This rule is built into the app, not just this plan. Sign up in a city that isn't open and you join its waitlist and see how close it is. In an open city, a man looking for women waits in a first-come line whenever admitting him would take women below 40%. A vouch from a verified member (3 each) is the only way to skip the line, and there's no paid shortcut. The founder console shows each city's progress and admits the next balanced batch. Demo: vivek@pairwise.demo.
 • Illustrative funnel: 50,000 invited → 5,000 waitlist → 3,000 verified profiles.
 
 PHASE 1 · Pune and Hyderabad, then Chennai and NCR (months 2–6)
@@ -44,7 +45,7 @@ WHAT STAYS FREE, FOREVER
 Verification, every safety tool, 5 Daily Picks, seeing who liked you (the most common paywall in dating), 3 conversations, unlimited Spark puzzles, Date Plan and partner perks. We never sell visibility (no boosts or super-likes, which would undo our fair-attention design), never price by gender, and never sell or ad-target personal data.
 
 WHERE THE MONEY COMES FROM
-1. Partner venues (the biggest line): cafés, board-game cafés and workshops pay ₹2,500–5,000 a month to appear in Date Plan, our safe-first-date planner, offering a perk to couples, plus ~₹50 per redeemed date. Couples are weekend footfall they want. Users get value; businesses pay.
+1. Partner venues (the biggest line): cafés, board-game cafés and workshops pay ₹2,500–5,000 a month to appear in Date Plan, our safe-first-date planner, offering a perk to couples, plus ~₹50 per redeemed date. Couples are weekend footfall they want. Users get value; businesses pay. This works end to end in the app: accepting a date at a partner venue issues a one-time perk code, the venue enters it at its counter on the day (pairwise-pi.vercel.app/partners/redeem), and each redemption is billed. Venues apply through a For venues page that enforces a first-date safety checklist. The founder console shows the revenue mix, venues against Plus, so we notice if we drift toward squeezing users.
 2. Pairwise Plus (₹299/month or ₹699/quarter, GST included): 10 picks instead of 5, 5 conversation slots instead of 3, and Relocation mode (meet people in the city you're moving to before you move), which is very relevant for this cohort. It's convenience, not advantage. Payment is web-based (UPI AutoPay), so there's no app-store commission, and cancelling takes one tap.
 3. Events: verified-only Puzzle Nights at ~₹399 a ticket, revenue-shared with venues.
 4. Sponsored Sparks: brands (coffee, travel, books) sponsor puzzle packs. Contextual only, no data targeting.
@@ -96,7 +97,7 @@ KEY ASSUMPTIONS (and how the pilot tests them)
 • Spark chats go deeper than non-Spark chats (H4). Measured with a randomised experiment, not a correlation: half of new matches get a Spark suggestion, assigned by a hash of the match id, and the founder console reports the lift with a confidence interval, a p-value and the sample size still needed. Pilot data isn't enough yet, and the console says so.
 • Attention balancing narrows the gender gap in time to first match (H5).
 • Safety features lead to dates: at least 15% of conversations reach a plan (H6).
-• Venues will pay for verified couple footfall. We start with free listings for perks, then charge.
+• Venues will pay for verified couple footfall. We start with a free first month, then charge; redeemed perk codes are the proof of value we show them.
 • Members accept that dating data never flows back to eLitmus. That firewall is also the legal requirement and the brand promise.
 
-All of this is live in the working app: a founder console tracks every hypothesis against its target, runs the H4 experiment, shows weekly retention cohorts, and the demo accounts walk through each feature.
+All of this is live in the working app: a founder console tracks every hypothesis against its target, runs the H4 experiment, shows weekly retention cohorts, controls city launches, and shows who pays. The demo accounts walk through each feature.
