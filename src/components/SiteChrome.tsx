@@ -10,6 +10,7 @@ export function SiteHeader() {
           <Link href="/#how" className="hover:text-ink">How it works</Link>
           <Link href="/#safety" className="hover:text-ink">Safety</Link>
           <Link href="/#pricing" className="hover:text-ink">Pricing</Link>
+          <Link href="/partners" className="hover:text-ink">For venues</Link>
           <Link href="/why" className="hover:text-ink">Founder&apos;s notes</Link>
         </nav>
         <div className="flex items-center gap-2">
@@ -39,6 +40,8 @@ export function SiteFooter() {
             <li><Link href="/why" className="hover:text-ink">Founder&apos;s notes</Link></li>
             <li><Link href="/#demo" className="hover:text-ink">Try the demo</Link></li>
             <li><Link href="/join" className="hover:text-ink">Join</Link></li>
+            <li><Link href="/partners" className="hover:text-ink">For venues</Link></li>
+            <li><Link href="/partners/redeem" className="hover:text-ink">Partner counter</Link></li>
           </ul>
         </div>
         <div className="text-sm">
