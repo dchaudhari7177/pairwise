@@ -188,6 +188,24 @@ export default function WhyPage() {
               why="Moving from chat to meeting is the outcome we care about, and safety is what makes people willing to do it."
               cost="Less flexibility for first dates, by design."
             />
+            <Decision
+              problem="Dating apps die in week one when a new city feels empty, or when men outnumber women and the market tips."
+              choice="A city launch gate, in code: a city opens at 1,500 verified members; in open cities, men seeking women wait in a first-come line whenever admitting one more would take women below 40%. Women, and men seeking men, are let in at once."
+              why="The two failure modes of a dating marketplace are liquidity and balance. Encoding the GTM rule means nobody can quietly trade balance for a growth number. The waitlist screen tells each person their place in line and exactly why."
+              cost="Slower sign-up growth, and some men wait. We think an honest line beats a flooded app. Gating only men who seek women avoids penalising people the imbalance doesn't come from."
+            />
+            <Decision
+              problem="Growth that brings in strangers erodes the trust we start with."
+              choice="Vouches: each verified member gets three single-use codes. A vouch skips the balance queue (or puts you first in line for a closed city), but can't open a city early. There is no paid way to skip the line."
+              why="Referrals that carry a reputation are worth more than referrals that carry a discount. Capping at three keeps them scarce, so they mean something."
+              cost="A vouched man can nudge the balance slightly. Three per member keeps it bounded, and the console shows how many in each queue were vouched."
+            />
+            <Decision
+              problem="Users don't want to pay, but we still need revenue."
+              choice="Partner venues pay, members don't: a monthly listing plus ₹50 for each redeemed first date, tracked with a one-time perk code that the venue enters at the counter on the day."
+              why="It charges at the moment members most want help (getting to a safe first date), for an outcome venues can see: couples at their tables. Only a code and a first name reach the venue."
+              cost="Revenue depends on dates actually happening, so we earn only when the product works. That's the incentive we want."
+            />
           </Section>
 
           <Section id="not" n={5} title="What we refused to build">
@@ -199,6 +217,7 @@ export default function WhyPage() {
               <li><strong>Gender-based pricing.</strong> Legally and ethically shaky. Fairness comes from the product, not the price.</li>
               <li><strong>A &ldquo;casual&rdquo; intent.</strong> Focus beats breadth for a young brand tied to eLitmus.</li>
               <li><strong>Data sharing with eLitmus or recruiters.</strong> The firewall is absolute, and it&apos;s also the legal requirement.</li>
+              <li><strong>A paid way to skip the waitlist.</strong> Selling places in line would undo the balance rule. A vouch from a real member is the only shortcut.</li>
             </ul>
           </Section>
 
@@ -206,7 +225,7 @@ export default function WhyPage() {
             <h3>Phase 0 · Bengaluru closed beta (weeks 0–6)</h3>
             <ul>
               <li>eLitmus sends a <strong>one-time, opt-in invitation</strong> to Bengaluru-based 2020–23 candidates who agreed to receive updates. People sign up fresh; nothing is migrated (DPDP purpose limitation).</li>
-              <li><strong>Women-first waves:</strong> women are invited first. Men join from a waitlist as the balance allows, and skip the queue if a verified member vouches for them.</li>
+              <li><strong>Women-first waves:</strong> women are invited first. Men join from a waitlist as the balance allows, and skip the queue if a verified member vouches for them. <em>This is live: try Vivek&apos;s demo account, or sign up in Chennai.</em></li>
               <li><strong>Liquidity threshold:</strong> a city opens only at about 1,500 verified members with 40% or more women. Why 1,500? After orientation (~½), age range (~40%) and intent/kids compatibility (~80%), each person has about 240 compatible profiles, which is roughly seven weeks of 5-a-day picks without repeats.</li>
               <li>Founding-member badge; weekly interviews with 20 users; the dashboard tracks H2–H6.</li>
             </ul>
