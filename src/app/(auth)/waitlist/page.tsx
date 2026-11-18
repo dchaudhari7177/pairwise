@@ -60,7 +60,10 @@ export default async function WaitlistPage() {
             <>
               <Meter label={`Women in ${city.label} right now`} value={city.womenShare} target={minShare} unit="%" ok={city.womenShare >= minShare} />
               <p className="text-sm text-ink-2">
-                {city.women} women and {city.gatedMen} men looking for women are active. Every woman who joins makes room for about one more man.
+                {city.women} women and {city.gatedMen} men looking for women are active, so there&apos;s room for{" "}
+                <strong className="text-ink">{city.room} more {city.room === 1 ? "man" : "men"}</strong> right now
+                {view.ahead > 0 ? `, offered to the ${view.ahead === 1 ? "person" : "people"} ahead of you first` : ""}. Every woman who joins
+                makes room for about one more, and we admit people in order as room opens.
               </p>
             </>
           )}

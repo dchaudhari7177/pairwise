@@ -119,6 +119,8 @@ export interface CityLaunch {
   pool: number;
   daysOfPicks: number;
   ready: boolean;
+  /** How many more men seeking women fit before women drop below the line. */
+  room: number;
 }
 
 export function launchStats(city: CityId, active: User[], waiting: User[]): CityLaunch {
@@ -146,6 +148,7 @@ export function launchStats(city: CityId, active: User[], waiting: User[]): City
     pool,
     daysOfPicks: Math.floor(pool / LAUNCH.picksPerDay),
     ready: verified >= LAUNCH.minVerified && womenShare >= LAUNCH.minWomenShare * 100,
+    room: Math.max(0, Math.floor(market.women / LAUNCH.minWomenShare + 1e-9) - market.women - market.gatedMen),
   };
 }
 

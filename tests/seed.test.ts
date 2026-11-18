@@ -83,7 +83,7 @@ describe("demo scenario: city launch gate", () => {
     const vivek = await login(store, "vivek@pairwise.demo", DEMO_PASSWORD);
     const view = (await waitlistView(store, vivek))!;
     expect(view).toMatchObject({ reason: "balance", position: 3 });
-    expect(view.city).toMatchObject({ open: true, women: 3, gatedMen: 3, womenShare: 50 });
+    expect(view.city).toMatchObject({ open: true, women: 3, gatedMen: 3, womenShare: 50, room: 1 });
     const aarav = await login(store, "aarav@pairwise.demo", DEMO_PASSWORD);
     expect((await myVouches(store, aarav, NOW)).map((v) => v.id)).toContain(DEMO_VOUCH);
     expect(await redeemVouch(store, vivek, DEMO_VOUCH, NOW)).toEqual({ admitted: true, voucher: "Aarav" });
