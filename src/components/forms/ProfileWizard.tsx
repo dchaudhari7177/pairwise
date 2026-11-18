@@ -238,13 +238,17 @@ export function ProfileWizard({
               <span className="label">City</span>
               <div className="flex flex-wrap gap-2">
                 {(Object.keys(CITIES) as CityId[]).map((c) => (
-                  <button key={c} type="button" aria-pressed={city === c} disabled={!CITIES[c].open} className="toggle-chip disabled:cursor-not-allowed disabled:opacity-50" onClick={() => setCity(c)}>
+                  <button key={c} type="button" aria-pressed={city === c} className="toggle-chip" onClick={() => setCity(c)}>
                     {CITIES[c].label}
-                    {!CITIES[c].open && " · soon"}
+                    {!CITIES[c].open && " · waitlist"}
                   </button>
                 ))}
               </div>
-              <p className="mt-1.5 text-xs text-muted">We open a city only once enough verified members (and a healthy balance of women and men) have joined.</p>
+              <p className="mt-1.5 text-xs text-muted">
+                {CITIES[city].open
+                  ? "We keep every open city balanced, so some men may wait a short while before they can start."
+                  : `${CITIES[city].label} opens once 1,500 verified members have joined. Sign up now and you'll hold your place in line.`}
+              </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
               <Field label="Area (optional)">
