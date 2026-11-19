@@ -126,6 +126,7 @@ would prerender is tiny. Request-time rendering keeps the mental model simple.
 | `vouches` | the code (`AARAV-7K2P`) | `by`, `usedBy`, `usedAt`: three per verified member, single use |
 | `redemptions` | the perk code (`PW-…`) | Issued when a partner-venue date is accepted; `redeemedAt` is what the venue is billed for |
 | `venueApplications` | `va_…` | From the For venues form, with the safety checklist |
+| `research` | random UUID | Anonymous `/research` survey answers and the `src` channel tag. No name, email or IP; never seeded, never touched by the demo reset |
 
 ## Security checklist
 
@@ -141,7 +142,7 @@ would prerender is tiny. Request-time rendering keeps the mental model simple.
 
 ## Testing
 
-`npm test` runs 144 tests (Vitest) covering:
+`npm test` runs 163 tests (Vitest) covering:
 
 - **Compatibility:** every hard filter, symmetry, reasons
 - **Picks:** attention balancing, diversity cap, determinism, activity
@@ -152,6 +153,7 @@ would prerender is tiny. Request-time rendering keeps the mental model simple.
 - **Activity:** queued likes stay hidden, a like becomes a match, date replies reach the proposer, blocked people vanish, seen marks clear the badge
 - **Launch gate:** closed cities, the 40% line, no queue-jumping, men seeking men, batch admission stopping at the line, liquidity maths
 - **Vouches and perks:** three single-use codes, skip-the-queue vs closed city, wrong venue, expired and cancelled codes, the IST-day window, the safety checklist
+- **Research:** adults only, one or two pain points, honeypot, contact details scrubbed from notes, nothing identifying stored, gender splits, no verdict under 30 answers or while the interval straddles the bar
 - **Seed:** every demo profile passes real sign-up validation; each demo account's story holds; reset restores it
 
 ## Scaling path

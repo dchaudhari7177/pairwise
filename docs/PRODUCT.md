@@ -93,6 +93,29 @@ question:
 
 That last rule matters most. A founder who ships on n = 8 is reading noise.
 
+### Checking the desk research with our own segment
+
+The observations above come from other people's surveys. So the app carries
+its own: a two-minute, anonymous questionnaire at `/research`, shared through
+tagged links (`?src=whatsapp`, `?src=linkedin`…) so we also learn which
+channel reaches the segment. Each of its nine questions is tied to a decision:
+
+| Question | Decision it informs |
+|---|---|
+| Would ID verification make you more likely to try an app? | H1, the core bet |
+| Five picks a day, or an endless feed? | H2, the daily limit |
+| Is a two-player puzzle an easier opener than "hi"? | H4 (stated intent; the experiment measures behaviour) |
+| What puts you off most? (up to two) | Which problem leads the pitch: trust, ghosting or attention |
+| Used an app this year? Still using it? | How many people incumbents already lost |
+| The most you'd pay a month for convenience | Plus pricing, and how much revenue must come from venues |
+| Age, gender, city | Segment fit, the split by gender, city launch order |
+
+The founder console reads every claim for women and men separately, with 95%
+Wilson intervals, and calls a claim only when the low end of its interval
+clears the bar with at least 30 answers. It stores no name, email or IP
+address, and strips contact details from the free-text note. The section is
+never seeded: it shows only what real people said.
+
 ## 4. Who it is for
 
 **Primary:** early-career professionals, 22–30, in tier-1 Indian tech cities,

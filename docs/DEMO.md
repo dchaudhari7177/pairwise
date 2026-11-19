@@ -89,6 +89,11 @@ The go-to-market plan, enforced in code.
   go 3× deeper. The randomised readout shows the honest picture: a wide
   confidence interval, p ≈ 0.2, and about 370 matches per arm needed, so the
   verdict is "keep running".
+- **User research**: answers to the anonymous [`/research`](https://pairwise-pi.vercel.app/research)
+  survey from real people, not the seed. Each claim is split by gender with an
+  interval, and only "holds" with 30+ answers. Also: ranked pain points,
+  willingness to pay against the ₹299 Plus price, and which shared link
+  brought the answers.
 - **Retention by sign-up week**: weekly cohorts, W0 to W4.
 - **Moderation queue**: Vikram (auto-reported by Scam Shield) and Harsh.
   Suspend, warn or dismiss.
