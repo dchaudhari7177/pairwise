@@ -206,6 +206,12 @@ export default function WhyPage() {
               why="It charges at the moment members most want help (getting to a safe first date), for an outcome venues can see: couples at their tables. Only a code and a first name reach the venue."
               cost="Revenue depends on dates actually happening, so we earn only when the product works. That's the incentive we want."
             />
+            <Decision
+              problem="Every hypothesis rests on other people's surveys (McAfee 2026, Woo 2018), not on our own segment."
+              choice="A two-minute anonymous survey at /research, nine taps, each question tied to the decision it informs. The founder console reads the answers by gender, with intervals, and only calls a claim once there are 30+ answers."
+              why="Before scaling anything, check the bet with the people it's for. Asking women and men separately matters most: a two-sided market fails if it only works for one side."
+              cost="Self-selected and unweighted, so it shows direction, not truth, and the console says so. Anonymity means no follow-up interviews; we chose honest answers over a contact list."
+            />
           </Section>
 
           <Section id="not" n={5} title="What we refused to build">
@@ -330,7 +336,7 @@ export default function WhyPage() {
             <ul>
               <li><strong>Next.js 16 + TypeScript</strong>, a mobile-first PWA. One codebase, installable, no app-store tax.</li>
               <li><strong>Firestore</strong> (the pilot runs in the US multi-region, with functions co-located in Washington; at launch it moves to Mumbai) behind a small document-store interface, with an in-memory implementation for tests and local development.</li>
-              <li><strong>Pure, tested domain core:</strong> compatibility, fair ranking, Scam Shield and Spark are plain functions with 100 unit and integration tests.</li>
+              <li><strong>Pure, tested domain core:</strong> compatibility, fair ranking, Scam Shield and Spark are plain functions, covered by 160+ unit and integration tests.</li>
               <li><strong>Security:</strong> scrypt passwords, signed httpOnly session cookies, same-origin checks, store-backed rate limits, server-enforced photo privacy, and DTOs that never leak private fields.</li>
               <li><strong>Polling chat</strong> (4s, only while visible): robust on serverless and cheap at pilot scale, with a clear path to realtime later.</li>
             </ul>
