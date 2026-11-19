@@ -1,6 +1,8 @@
 import { AlertTriangle, CheckCircle2, FlaskConical, IndianRupee, MessagesSquare, ShieldAlert, Users } from "lucide-react";
 import type { Metadata } from "next";
+import { DemoGuide } from "@/components/DemoGuide";
 import { Avatar } from "@/components/Portrait";
+import { demoAccountFor } from "@/lib/demo-guide";
 import { requireAdmin } from "@/lib/server/viewer";
 import { LAUNCH, launchBoard, type CityLaunch } from "@/lib/services/launch";
 import { computeMetrics, type Metrics } from "@/lib/services/metrics";
@@ -282,6 +284,7 @@ export default async function AdminPage() {
   const open = reports.filter((r) => r.status === "open");
   const resolved = reports.filter((r) => r.status === "resolved").slice(0, 5);
   const maxFunnel = Math.max(1, m.funnel[0].value);
+  const demo = demoAccountFor(user.email);
 
   return (
     <div className="space-y-10">
@@ -298,7 +301,7 @@ export default async function AdminPage() {
       </div>
 
       {/* North star */}
-      <section className="grid gap-4 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
+      <section id="north-star" className="scroll-mt-24 grid gap-4 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
         <div className="rounded-3xl bg-plum p-6 text-paper">
           <p className="eyebrow text-paper/60">North-star metric</p>
           <p className="mt-2 font-display text-5xl font-semibold">{m.northStar.wmc}</p>
@@ -337,10 +340,12 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        <CityLaunchCard board={board} />
+        <div id="launch" className="scroll-mt-24">
+          <CityLaunchCard board={board} />
+        </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
+      <section id="revenue" className="scroll-mt-24 grid gap-6 lg:grid-cols-2">
         <RevenueMix plusMrr={m.revenue.mrr} plusMembers={m.revenue.plusMembers} venues={venues} />
         <VenuePipeline apps={applications} />
       </section>
@@ -382,13 +387,13 @@ export default async function AdminPage() {
         </table>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.15fr_1fr]">
+      <section id="experiment" className="scroll-mt-24 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
         <ExperimentCard e={m.experiment} />
         <CohortTable cohorts={m.cohorts} />
       </section>
 
       {/* Moderation */}
-      <section>
+      <section id="moderation" className="scroll-mt-24">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-2xl font-semibold">Moderation queue</h2>
@@ -440,6 +445,7 @@ export default async function AdminPage() {
           </div>
         )}
       </section>
+      {demo && <DemoGuide account={demo} />}
     </div>
   );
 }

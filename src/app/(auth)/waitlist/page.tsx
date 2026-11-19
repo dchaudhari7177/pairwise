@@ -2,6 +2,8 @@ import { Hourglass, Scale, ShieldCheck, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { DemoGuide } from "@/components/DemoGuide";
+import { demoAccountFor, serverDoneSteps } from "@/lib/demo-guide";
 import { requireMember } from "@/lib/server/viewer";
 import { LAUNCH, waitlistView } from "@/lib/services/launch";
 import { VouchForm } from "./VouchForm";
@@ -32,6 +34,7 @@ export default async function WaitlistPage() {
   if (!view) redirect("/today");
   const { city, reason } = view;
   const minShare = LAUNCH.minWomenShare * 100;
+  const demo = demoAccountFor(user.email);
 
   return (
     <div className="w-full max-w-2xl animate-rise">
@@ -107,6 +110,7 @@ export default async function WaitlistPage() {
         While you wait: <Link href="/me/edit" className="underline">polish your profile</Link> ·{" "}
         <Link href="/settings" className="underline">settings, data export and account deletion</Link>
       </p>
+      {demo && <DemoGuide account={demo} serverDone={serverDoneSteps(demo, user)} />}
     </div>
   );
 }

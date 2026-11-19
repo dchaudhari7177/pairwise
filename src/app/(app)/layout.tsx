@@ -1,5 +1,7 @@
 import { AppMain } from "@/components/AppFrame";
 import { AppNav, MobileTopBar } from "@/components/AppNav";
+import { DemoGuide } from "@/components/DemoGuide";
+import { demoAccountFor, serverDoneSteps } from "@/lib/demo-guide";
 import { requireMember } from "@/lib/server/viewer";
 import { listActivity } from "@/lib/services/activity";
 import { likesReceived } from "@/lib/services/discovery";
@@ -19,6 +21,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   };
   const p = user.profile!;
   const card = toCard(user, { self: true });
+  const demo = demoAccountFor(user.email);
   return (
     <div className="flex min-h-dvh">
       <AppNav counts={counts} plus={user.plan === "plus"} me={{ name: p.firstName, seed: p.avatarSeed, gender: p.gender, photo: card.photo }} />
@@ -36,6 +39,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         )}
         <AppMain>{children}</AppMain>
       </div>
+      {demo && <DemoGuide account={demo} dock="sidebar" serverDone={serverDoneSteps(demo, user)} />}
     </div>
   );
 }
