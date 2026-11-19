@@ -250,7 +250,7 @@ export default function Landing() {
           <p className="eyebrow">For the eLitmus evaluation team</p>
           <h2 className="mt-3 text-4xl font-semibold">Step into a story</h2>
           <p className="mt-3 max-w-2xl text-ink-2">
-            Each demo account opens partway through a story, so you can see every feature without waiting for matches. Or{" "}
+            Each demo account opens partway through a story, with a short in-app guide to the screens worth seeing, so you can see every feature without waiting for matches. Or{" "}
             <Link href="/join" className="text-rose underline underline-offset-4">
               create your own account
             </Link>{" "}

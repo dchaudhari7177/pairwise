@@ -52,7 +52,9 @@ sponsored puzzles), not from users' pockets.
 
 Or sign up fresh: verification uses a clearly labelled simulated eLitmus
 consent screen (try `demo.candidate@elitmus.test`). Demo data resets nightly.
-The full walkthrough is in [docs/DEMO.md](docs/DEMO.md).
+The full walkthrough is in [docs/DEMO.md](docs/DEMO.md), and each demo
+account carries it inside the app as an **Evaluator guide**: a checklist with
+deep links, one-click story switching, and a button that restores the demo.
 
 ## What makes it different
 

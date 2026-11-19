@@ -6,6 +6,12 @@ All demo accounts use the password **`Demo@2026`**. You can also use the
 one-click buttons in the "Step into a story" section of the home page.
 Demo data resets every night at 03:00 IST, so feel free to click everything.
 
+Every demo account also opens with an **Evaluator guide** in the corner of the
+app: the steps below as a checklist with deep links, ticked off as you visit
+each screen, plus one-click switching between stories. If another evaluator got
+there first (say Ishita's date is already accepted), **Restore the demo** in the
+guide puts every story back at its start in a few seconds.
+
 ## 1. Aarav: the core loop (aarav@pairwise.demo)
 
 0. **Activity** (the bell): four new things since yesterday: Ishita's date
