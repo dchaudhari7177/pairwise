@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { DemoGuide } from "@/components/DemoGuide";
 import { demoAccountFor, serverDoneSteps } from "@/lib/demo-guide";
 import { requireMember } from "@/lib/server/viewer";
-import { LAUNCH, waitlistView } from "@/lib/services/launch";
+import { canUseEvaluatorPass, LAUNCH, waitlistView } from "@/lib/services/launch";
+import { EvaluatorPass } from "./EvaluatorPass";
 import { VouchForm } from "./VouchForm";
 
 export const metadata: Metadata = { title: "You're on the waitlist" };
@@ -90,6 +91,14 @@ export default async function WaitlistPage() {
           </p>
           <VouchForm />
         </div>
+      )}
+
+      {canUseEvaluatorPass(user) && <EvaluatorPass />}
+      {reason === "city_closed" && !user.seed && (
+        <p className="mt-6 rounded-2xl bg-paper-2/70 p-4 text-sm text-ink-2">
+          <strong className="text-ink">Evaluating Pairwise?</strong> Bengaluru, Pune and Hyderabad are open.{" "}
+          <Link href="/me/edit" className="font-semibold text-rose-2 underline">Change your city</Link> to one of them to go straight in.
+        </p>
       )}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">

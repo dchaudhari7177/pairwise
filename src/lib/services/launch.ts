@@ -51,7 +51,8 @@ function marketOf(users: User[]): Market {
   let women = 0;
   let gatedMen = 0;
   for (const u of users) {
-    if (!u.profile) continue;
+    // Evaluator-pass accounts are visitors to the demo, not members of the market.
+    if (!u.profile || u.evaluatorPass) continue;
     if (u.profile.gender === "woman") women++;
     else if (isBalanceGated(u.profile)) gatedMen++;
   }
@@ -265,6 +266,33 @@ export async function redeemVouch(store: DocStore, user: User, raw: string, now 
     },
   ]);
   return { admitted: opensNow, voucher: voucher.profile!.firstName };
+}
+
+// ---------------------------------------------------------------------------
+// The evaluator pass.
+//
+// The balance gate is real, and Vivek's demo account shows it end to end. But
+// the live app is also where evaluators sign up fresh, and sign-ups outlive the
+// nightly reset. After about a dozen men had tried it in Bengaluru, every later
+// evaluator would land on the waitlist and never see the product. So on the
+// demo deployment a fresh account in a balance queue can step past the line,
+// clearly labelled, and isn't counted in the city's balance afterwards. A real
+// launch sets PAIRWISE_EVALUATOR_PASS=off.
+
+export const evaluatorPassEnabled = () => process.env.PAIRWISE_EVALUATOR_PASS !== "off";
+
+export function canUseEvaluatorPass(user: Pick<User, "status" | "waitlist" | "seed">) {
+  return evaluatorPassEnabled() && user.status === "waitlisted" && user.waitlist?.reason === "balance" && !user.seed;
+}
+
+export async function applyEvaluatorPass(store: DocStore, user: User, now = Date.now()) {
+  if (!evaluatorPassEnabled()) throw forbidden("The evaluator pass is switched off here.");
+  if (user.seed) throw badRequest("Demo accounts tell their own story: try Aarav's vouch code instead.");
+  if (user.status !== "waitlisted" || user.waitlist?.reason !== "balance") {
+    throw badRequest(user.status === "waitlisted" ? "The pass only skips the balance line. Pick an open city in your profile instead." : "You're already in.");
+  }
+  await store.update("users", user.id, { status: "active", admittedAt: now, evaluatorPass: now, waitlist: del() });
+  return { admitted: true };
 }
 
 /** Exposed for tests: a deterministic code generator. */

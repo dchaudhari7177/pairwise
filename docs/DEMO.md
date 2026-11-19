@@ -106,6 +106,15 @@ Go to **Join**, then sign up (18+). On **Continue with eLitmus**, use
 marked as simulated). Alternatively, **Work email** shows the OTP on screen
 in demo mode. Then the 6-step profile, and your first picks.
 
+If you sign up as a man looking for women in a city where admitting you would
+take women below 40%, you land on the waitlist: that's the launch gate working.
+Real sign-ups outlive the nightly reset, so after enough evaluators have tried
+it, everyone after them would wait. The waitlist therefore offers a clearly
+labelled **evaluator pass** to fresh accounts on this demo deployment. It lets
+you in, and your account stops counting toward the city's balance. A real
+launch sets `PAIRWISE_EVALUATOR_PASS=off`. (Vivek's demo account shows the
+gate with a vouch instead.)
+
 ### What's simulated (and why)
 
 | Simulated | Production plan |

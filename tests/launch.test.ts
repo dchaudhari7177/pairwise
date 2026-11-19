@@ -181,3 +181,45 @@ describe("vouches", () => {
     await expect(redeemVouch(store, woman(), "ZZZ-AAAA", NOW)).rejects.toThrow(/already in/);
   });
 });
+
+describe("the evaluator pass", () => {
+  it("lets a fresh account past the balance line, and stops counting it in the balance", async () => {
+    const { applyEvaluatorPass, canUseEvaluatorPass } = await import("@/lib/services/launch");
+    const w = woman();
+    const m1 = man();
+    const evaluator = waiting(man(), "balance", NOW);
+    const store = await storeWith([w, m1, evaluator]);
+    expect(canUseEvaluatorPass(evaluator)).toBe(true);
+    await applyEvaluatorPass(store, evaluator, NOW);
+    const after = (await store.get<User>("users", evaluator.id))!;
+    expect(after.status).toBe("active");
+    expect(after.waitlist).toBeUndefined();
+    expect(after.evaluatorPass).toBe(NOW);
+    const city = await cityLaunch(store, evaluator.profile!.city);
+    expect(city.gatedMen).toBe(1);
+  });
+
+  it("isn't for demo accounts, closed cities, or people already in", async () => {
+    const { applyEvaluatorPass, canUseEvaluatorPass } = await import("@/lib/services/launch");
+    const seeded = { ...waiting(man(), "balance", NOW), seed: true };
+    const closed = waiting(man(), "city_closed", NOW);
+    const store = await storeWith([seeded, closed]);
+    expect(canUseEvaluatorPass(seeded)).toBe(false);
+    expect(canUseEvaluatorPass(closed)).toBe(false);
+    await expect(applyEvaluatorPass(store, seeded, NOW)).rejects.toThrow(/vouch/);
+    await expect(applyEvaluatorPass(store, closed, NOW)).rejects.toThrow(/open city/);
+    await expect(applyEvaluatorPass(store, man(), NOW)).rejects.toThrow(/already in/);
+  });
+
+  it("can be switched off for a real launch", async () => {
+    const { applyEvaluatorPass, canUseEvaluatorPass } = await import("@/lib/services/launch");
+    const u = waiting(man(), "balance", NOW);
+    process.env.PAIRWISE_EVALUATOR_PASS = "off";
+    try {
+      expect(canUseEvaluatorPass(u)).toBe(false);
+      await expect(applyEvaluatorPass(await storeWith([u]), u, NOW)).rejects.toThrow(/switched off/);
+    } finally {
+      delete process.env.PAIRWISE_EVALUATOR_PASS;
+    }
+  });
+});

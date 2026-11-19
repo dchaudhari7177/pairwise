@@ -113,6 +113,8 @@ export interface User {
   /** The verified member who vouched for this person, if any. */
   vouchedBy?: string;
   admittedAt?: number;
+  /** When an evaluator skipped the balance line on the demo deployment. Not counted in the city's balance. */
+  evaluatorPass?: number;
   /** Marks demo-scenario documents so the nightly reset can find them. */
   seed?: boolean;
 }

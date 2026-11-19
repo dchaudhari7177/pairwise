@@ -142,7 +142,7 @@ would prerender is tiny. Request-time rendering keeps the mental model simple.
 
 ## Testing
 
-`npm test` runs 163 tests (Vitest) covering:
+`npm test` runs 166 tests (Vitest) covering:
 
 - **Compatibility:** every hard filter, symmetry, reasons
 - **Picks:** attention balancing, diversity cap, determinism, activity
@@ -151,7 +151,7 @@ would prerender is tiny. Request-time rendering keeps the mental model simple.
 - **Services:** likes and matches, the inbound cap, slots, messaging, expiry, Spark flow, Date Plan, moderation, Plus, export and deletion
 - **Experiments:** normal CDF/quantile, Wilson, z-test and sample size against reference values; hash assignment is stable, salted and splits ~50/50; only treatment matches get the nudge
 - **Activity:** queued likes stay hidden, a like becomes a match, date replies reach the proposer, blocked people vanish, seen marks clear the badge
-- **Launch gate:** closed cities, the 40% line, no queue-jumping, men seeking men, batch admission stopping at the line, liquidity maths
+- **Launch gate:** closed cities, the 40% line, no queue-jumping, men seeking men, batch admission stopping at the line, liquidity maths; the evaluator pass (fresh accounts only, balance queue only, not counted in the balance, can be switched off)
 - **Vouches and perks:** three single-use codes, skip-the-queue vs closed city, wrong venue, expired and cancelled codes, the IST-day window, the safety checklist
 - **Research:** adults only, one or two pain points, honeypot, contact details scrubbed from notes, nothing identifying stored, gender splits, no verdict under 30 answers or while the interval straddles the bar
 - **Seed:** every demo profile passes real sign-up validation; each demo account's story holds; reset restores it
