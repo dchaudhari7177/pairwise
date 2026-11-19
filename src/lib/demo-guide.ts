@@ -198,6 +198,12 @@ export const GUIDES: Record<DemoAccountId, Guide> = {
         href: "/admin#experiment",
       },
       {
+        id: "research",
+        title: "What real people said",
+        detail: "Answers to the anonymous /research survey from people in the segment, not the seed. Each claim is split by gender and only “holds” at 30+ answers.",
+        href: "/admin#research",
+      },
+      {
         id: "moderation",
         title: "Moderation queue",
         detail: "Vikram was auto-reported by Scam Shield. Suspend, warn or dismiss, against IT Rules 2021 timelines.",
@@ -212,6 +218,7 @@ export const GUIDE_EXTRAS = [
   { label: "For venues: how we earn without charging members", href: "/partners" },
   { label: "Partner counter: PIN 4321, code PW-7Q4M2K", href: "/partners/redeem" },
   { label: "Founder's notes: why each decision", href: "/why" },
+  { label: "The 2-minute user-research survey (anonymous)", href: "/research" },
 ];
 
 export const GUIDE_ORDER: DemoAccountId[] = ["aarav", "meera", "kabir", "vivek", "admin"];

@@ -42,6 +42,7 @@ export function SiteFooter() {
             <li><Link href="/join" className="hover:text-ink">Join</Link></li>
             <li><Link href="/partners" className="hover:text-ink">For venues</Link></li>
             <li><Link href="/partners/redeem" className="hover:text-ink">Partner counter</Link></li>
+            <li><Link href="/research" className="hover:text-ink">Take the 2-minute survey</Link></li>
           </ul>
         </div>
         <div className="text-sm">

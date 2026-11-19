@@ -105,7 +105,12 @@ export default function Landing() {
           ))}
           <p className="text-xs text-muted md:col-span-3">
             Sources: McAfee <em>Modern Love</em> research (India, Feb 2026); Woo survey of 20,000 urban Indians (2018: 26% of users
-            were women). See the <Link className="underline" href="/why">founder&apos;s notes</Link> for the full reasoning.
+            were women). See the <Link className="underline" href="/why">founder&apos;s notes</Link> for the full reasoning. We&apos;re
+            checking them against our own segment too:{" "}
+            <Link className="font-semibold text-rose-2 underline" href="/research?src=landing">
+              take the 2-minute anonymous survey
+            </Link>
+            .
           </p>
         </div>
       </section>
