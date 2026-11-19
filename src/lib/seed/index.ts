@@ -28,7 +28,8 @@ import { answer, COLLEGES, EMPLOYERS, habits, lifePlan, PEOPLE, type Person } fr
  * (/api/cron/reset-demo) so it never goes stale.
  */
 
-export const DEMO_PASSWORD = "Demo@2026";
+import { DEMO_PASSWORD } from "../demo-guide";
+export { DEMO_PASSWORD };
 export const DEMO_ACCOUNTS = [
   { email: "aarav@pairwise.demo", uid: "s_aarav", label: "Aarav, 26, Bengaluru", story: "Has a date proposal to answer and a Spark puzzle to finish" },
   { email: "meera@pairwise.demo", uid: "s_meera", label: "Meera, 25, Bengaluru", story: "Sees the inbound cap, Scam Shield and Close-kindly in action" },
