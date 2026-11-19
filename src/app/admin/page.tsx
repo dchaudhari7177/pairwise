@@ -10,8 +10,10 @@ import { listApplications, venueRevenue } from "@/lib/services/perks";
 import type { VenueApplication } from "@/lib/types";
 import { CITIES } from "@/lib/options";
 import { listReports } from "@/lib/services/moderation";
+import { researchSummary } from "@/lib/services/research";
 import { timeAgo } from "@/lib/time";
 import { AdmitButton, ConsoleActions, ResolveButtons } from "./AdminActions";
+import { ResearchCard } from "./ResearchCard";
 
 export const metadata: Metadata = { title: "Founder console" };
 
@@ -274,12 +276,13 @@ function CohortTable({ cohorts }: { cohorts: Metrics["cohorts"] }) {
 
 export default async function AdminPage() {
   const { store, user } = await requireAdmin();
-  const [m, reports, board, venues, applications] = await Promise.all([
+  const [m, reports, board, venues, applications, research] = await Promise.all([
     computeMetrics(store, user),
     listReports(store, user),
     launchBoard(store),
     venueRevenue(store),
     listApplications(store),
+    researchSummary(store, user),
   ]);
   const open = reports.filter((r) => r.status === "open");
   const resolved = reports.filter((r) => r.status === "resolved").slice(0, 5);
@@ -385,6 +388,10 @@ export default async function AdminPage() {
             })}
           </tbody>
         </table>
+      </section>
+
+      <section id="research" className="scroll-mt-24">
+        <ResearchCard s={research} />
       </section>
 
       <section id="experiment" className="scroll-mt-24 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
