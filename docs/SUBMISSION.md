@@ -6,6 +6,8 @@ Plain text, ready to paste into the Google Form. Each answer stands on its own.
 
 ## 1. What is your go-to-market & scaling strategy?
 
+IN SHORT: Start where no competitor can: eLitmus's ~1 million identity-verified candidates. Open one city at a time, women first, and only once a city has 1,500 verified members with at least 40% women. Grow through vouches and Puzzle Nights rather than paid ads. Open to any verified professional once retention is proven. The launch gate is working code, not just a plan.
+
 Pairwise starts with an advantage no dating app has: around 1 million eLitmus candidates (2020–23 batches), now 23–28, many of whom moved cities for their first job. Their identity was already verified at a proctored test, and their college (often their employer too) is known. So our acquisition cost is close to zero, and trust is built in from day one. It's also a proven move: Info Edge (Naukri) owns the dating app Aisle through Jeevansathi.
 
 PHASE 0 · Bengaluru closed beta (weeks 0–6)
@@ -39,6 +41,8 @@ Picks become a nightly job per city, chat moves to realtime listeners, and analy
 
 ## 2. How do you plan on monetising the app?
 
+IN SHORT: Businesses pay, members mostly don't. Partner venues pay a listing fee plus ₹50 per redeemed first date (tracked with a one-time perk code, live in the app). Plus (₹299/month) sells convenience, never safety or visibility. About three-quarters of projected revenue comes from businesses, and seeing who liked you stays free.
+
 My answer to "users don't want to pay" is: mostly, they won't have to. About three-quarters of projected revenue comes from businesses that want access to a verified, high-intent audience that actually goes on dates.
 
 WHAT STAYS FREE, FOREVER
@@ -63,6 +67,8 @@ So the monetised part of the app is the Date Plan surface (venues, perks, events
 ---
 
 ## 3. Your hypothesis & assumptions
+
+IN SHORT: Young professionals in India have left dating apps over fake profiles, flooded or empty inboxes and ghosting, not because they stopped wanting to meet people. A verified-only app with five explained picks a day, fair attention and a co-op icebreaker can win them back. Every hypothesis has a metric, and the riskiest one has a randomised experiment in the founder console. I'm also checking each assumption with real people through a two-minute anonymous survey in the app.
 
 TARGET SEGMENT
 Early-career professionals aged 22–30 in tier-1 tech cities, often from tier-2/3 hometowns and non-elite colleges (the eLitmus base), who want a real relationship (now or within a few years) and are tired of fake profiles and endless swiping. Not for hookups, not for caste-sorted matrimony, never under 18.
@@ -99,5 +105,8 @@ KEY ASSUMPTIONS (and how the pilot tests them)
 • Safety features lead to dates: at least 15% of conversations reach a plan (H6).
 • Venues will pay for verified couple footfall. We start with a free first month, then charge; redeemed perk codes are the proof of value we show them.
 • Members accept that dating data never flows back to eLitmus. That firewall is also the legal requirement and the brand promise.
+
+HOW I'M TESTING THESE BEFORE SCALING
+The market figures above come from other people's surveys. So the app has its own: a two-minute, anonymous questionnaire at pairwise-pi.vercel.app/research. Each of its nine questions maps to one decision: does verification make people likelier to try an app (H1), five picks or an endless feed (H2), is a shared puzzle an easier opener (H4), what puts people off most, and what they would pay. The founder console reads every answer separately for women and men, with confidence intervals, and won't call a claim until at least 30 people have answered. Shared links carry a channel tag, so the same survey also shows which channel reaches the segment best.
 
 All of this is live in the working app: a founder console tracks every hypothesis against its target, runs the H4 experiment, shows weekly retention cohorts, controls city launches, and shows who pays. The demo accounts walk through each feature.
