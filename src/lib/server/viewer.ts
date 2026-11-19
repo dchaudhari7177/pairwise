@@ -1,6 +1,7 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 import { readSession, SESSION_COOKIE } from "../auth/session";
 import { unauthorized } from "../errors";
 import { settlePlan } from "../services/plus";
@@ -14,7 +15,10 @@ export interface ViewerContext {
   user: User;
 }
 
-async function load(): Promise<ViewerContext | null> {
+// Layouts and pages each ask for the viewer. cache() makes that one session
+// read (and at most one write) per request instead of one per caller. Outside a
+// React render, as in API routes, it simply calls through.
+const load = cache(async function load(): Promise<ViewerContext | null> {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   const claims = await readSession(token);
   if (!claims) return null;
@@ -24,7 +28,7 @@ async function load(): Promise<ViewerContext | null> {
   user = await settlePlan(store, user);
   await touch(store, user);
   return { store, user };
-}
+});
 
 /** For pages: the signed-in member, or null. */
 export async function getViewer(): Promise<ViewerContext | null> {
