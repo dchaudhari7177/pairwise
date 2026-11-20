@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EconomicsModel } from "@/components/EconomicsModel";
+import { GATE } from "@/lib/gates";
 
 export const metadata: Metadata = {
   title: "Founder's notes",
@@ -314,8 +315,26 @@ export default function WhyPage() {
               <li><strong>Scarcity feels limiting:</strong> watch the pick decision rate (H2) and D30 retention; tune the 5 picks and 3 slots.</li>
               <li><strong>Venues won&apos;t pay:</strong> start with free perks in exchange for listing, and charge once redemptions prove footfall.</li>
             </ul>
+            <h3>Go, iterate or stop: decided before the data</h3>
             <p>
-              The <Link href="/#demo">founder console</Link> (admin demo account) shows each hypothesis live against its target.
+              Since a new city is an investment until it has about 4,300 members, the next one opens only when the pilot passes a gate written
+              down in advance:
+            </p>
+            <ul>
+              <li>The pilot city has at least {GATE.minActive.toLocaleString("en-IN")} active members. Below that, every other reading is noise.</li>
+              <li>Women stay at {GATE.womenShare.target}% or more without heavy throttling.</li>
+              <li>At least {GATE.pickDecisionRate.target}% of picks get a decision (H2), ghosting stays at or under {GATE.ghostRate.target}% (H3), and {GATE.dateRate.target}% of conversations reach a date (H6).</li>
+              <li>At least {GATE.week4Retention.target}% of members are still active in their fourth week.</li>
+              <li>At least {GATE.payingVenues.target} venues pay after their free month, not just list for free.</li>
+            </ul>
+            <p>
+              <strong>Kill lines</strong>, far below the targets: women under {GATE.womenShare.kill}% despite the waitlist, under {GATE.dateRate.kill}% of conversations reaching
+              a date, under {GATE.week4Retention.kill}% active in week 4, or over {GATE.ghostRate.kill}% of chats ghosted. Crossing one means no new city. We fix the
+              pilot, or test a &ldquo;new in the city&rdquo; friends mode on the same verified base, which keeps the asset even if dating doesn&apos;t work.
+            </p>
+            <p>
+              The <Link href="/#demo">founder console</Link> (admin demo account) runs this gate live. Right now it says &ldquo;too early&rdquo;, because
+              the pilot is a demo seed and not 1,500 people, and it shows each hypothesis against its target.
             </p>
           </Section>
 
