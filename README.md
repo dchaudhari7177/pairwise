@@ -155,5 +155,8 @@ Scaffolded with `create-next-app`. Uses [Next.js](https://nextjs.org),
 [firebase-admin](https://github.com/firebase/firebase-admin-node),
 [jose](https://github.com/panva/jose), [Zod](https://zod.dev) and
 [Vitest](https://vitest.dev), plus the Fraunces and Inter typefaces (SIL Open
-Font License) through `next/font`. No templates or UI kits. The product design,
+Font License) through `next/font`. Member portraits are generated with
+[DiceBear](https://www.dicebear.com) (MIT) using the "Lorelei" illustration set
+by Lisa Wischofsky (CC0 1.0). Code was written with the help of an AI coding
+assistant (Claude Code), as the brief allows. No templates or UI kits. The product design,
 copy, matching logic, puzzles and visual design are original to this project.
