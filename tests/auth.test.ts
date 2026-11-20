@@ -29,7 +29,10 @@ describe("sessions", () => {
     const [h, p, s] = token.split(".");
     const forged = Buffer.from(JSON.stringify({ sub: "u2", role: "admin" })).toString("base64url");
     expect(await readSession(`${h}.${forged}.${s}`)).toBeNull();
-    expect(await readSession(`${h}.${p}.x${s.slice(1)}`)).toBeNull();
+    // Change the signature's first character. It must actually differ: the
+    // signature covers a timestamp, so 1 run in 64 it already starts with "x".
+    const tampered = (s[0] === "x" ? "y" : "x") + s.slice(1);
+    expect(await readSession(`${h}.${p}.${tampered}`)).toBeNull();
     expect(await readSession(undefined)).toBeNull();
   });
 });
