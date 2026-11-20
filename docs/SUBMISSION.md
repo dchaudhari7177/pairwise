@@ -69,7 +69,7 @@ Revenue ≈ ₹5.7L a month. City costs ≈ ₹2.0L (a city lead, two moderators
 WHAT IT COSTS AND WHEN IT PAYS
 • A central team (founder/PM, two engineers, a trust & safety lead, legal and accounting retainers) costs about ₹6L a month, so the company breaks even at two mature cities. Five cities come to about ₹3.4 crore revenue and ₹1.5 crore operating profit a year.
 • A new city only covers its own costs from about 4,300 verified members. A city opened at the 1,500 launch line is an investment for a while, so cities open one at a time.
-• In the conservative case (20k verified, 40% active, 2.5% on Plus, 35 venues) it takes seven cities, and five would lose about ₹14 lakh a year. That's exactly what the go/no-go gate (below, and in the founder console) is there to catch before we spend.
+• In the conservative case (20k verified, 40% active, 2.5% on Plus, 35 venues) it takes seven cities, and five would lose about ₹14 lakh a year. That's exactly what the go/no-go gate (in my go-to-market answer, and live in the founder console) is there to catch before we spend.
 • CAC for the founding cohort is near zero. Paid acquisition starts only when CAC is under six months of contribution per member.
 
 So the monetised part of the app is the Date Plan surface (venues, perks, events) plus convenience features in Plus. That puts revenue at the step where members most need help (getting from chat to a safe first date), so our incentives line up with theirs.
@@ -121,3 +121,19 @@ HOW I'M TESTING THESE BEFORE SCALING
 The market figures above come from other people's surveys. So the app has its own: a two-minute, anonymous questionnaire at pairwise-pi.vercel.app/research. Each of its nine questions maps to one decision: does verification make people likelier to try an app (H1), five picks or an endless feed (H2), is a shared puzzle an easier opener (H4), what puts people off most, and what they would pay. The founder console reads every answer separately for women and men, with confidence intervals, and won't call a claim until at least 30 people have answered. Shared links carry a channel tag, so the same survey also shows which channel reaches the segment best.
 
 All of this is live in the working app: a founder console tracks every hypothesis against its target, runs the H4 experiment, shows weekly retention cohorts, controls city launches, and shows who pays. The demo accounts walk through each feature.
+
+---
+
+## 4. A breakdown of your journey in making the application
+
+Day 0 (17 Nov, morning): Read the brief and studied the market: Indian dating-app research (McAfee 2026 on fake profiles and romance scams, the Woo survey on the 3:1 gender ratio) and Info Edge's ownership of Aisle as proof that a careers company can run a dating product. Picked the problem (trust, flooded vs empty inboxes, ghosting) and wrote the product thesis, with hypotheses and what I would refuse to build, before writing any code.
+
+Day 1 (17 Nov): Built the core as plain, tested functions first: an explainable compatibility score, Daily Picks ranked with attention balancing, a 10-a-day inbound like cap, Scam Shield, and Spark (two-player split-clue puzzles, each one checked to have exactly one answer). Then services, APIs and screens: sign-up with granular consents, simulated eLitmus Verify plus work-email OTP, onboarding, chat with 3 open slots and close-kindly, Date Plan with share-with-a-friend and check-in, reporting and moderation, Plus, data export and real deletion, legal pages and the founder console. Deployed to Vercel with Firestore; when pages were slow from India, I moved the functions next to the database region. Evening: redesigned the UI, turned the Spark hypothesis into a randomised A/B test, and added retention cohorts.
+
+Day 2 (18 Nov): Re-read the brief's three pillars (sign-ups, revenue, legal) and turned the go-to-market and monetisation plans into working code: a city launch gate (1,500 verified, 40% women, 3 vouches per member, no paid shortcut) with a waitlist, and partner-venue perk codes that venues redeem at their counter, which is how businesses pay so members don't have to.
+
+Day 3 (19 Nov): Worked on the evaluator's experience: measured page speed from India and cut database round trips, added loading skeletons, an in-app guide for each demo account, and a "restore the demo" button. Built an anonymous user-research survey at /research whose answers the console reads by gender, with confidence intervals. Fixed a bug where the launch gate could lock new evaluator accounts out.
+
+Day 4 (20 Nov): Audited everything against the brief again. Added the cost side: a tested unit-economics model net of GST and payment fees, with break-even per city and for the company. It showed my earlier "three-quarters of revenue from businesses" claim was wrong (it's two-thirds), so I corrected it. Added a go / iterate / stop gate with kill lines before opening any new city. Checked every page as every demo account, ran the full test suite (184 tests) and production build, deployed, and smoke-tested the live site.
+
+Tools: I used an AI coding assistant (Claude Code) to write most of the code, as the brief allows. The product decisions, the trade-offs and the numbers are mine, and I reviewed and tested what it produced. Open-source parts (Next.js, Tailwind, Firestore, the CC0 Lorelei illustrations) are listed in the README.
