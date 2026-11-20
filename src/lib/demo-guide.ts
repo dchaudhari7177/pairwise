@@ -192,6 +192,18 @@ export const GUIDES: Record<DemoAccountId, Guide> = {
         href: "/admin#revenue",
       },
       {
+        id: "economics",
+        title: "Does a city pay for itself?",
+        detail: "An interactive city P&L, net of GST and payment fees, with costs and break-even. Drag the assumptions: the conservative case needs seven cities.",
+        href: "/admin#economics",
+      },
+      {
+        id: "gate",
+        title: "Go, iterate or stop",
+        detail: "What must hold before we open the next city, and the kill lines written down before the data. It honestly says “too early”: the pilot is the seed, not 1,500 members.",
+        href: "/admin#gate",
+      },
+      {
         id: "experiment",
         title: "A real A/B test, read honestly",
         detail: "H4 is randomised by a hash of the match id. The readout says “keep running”: the CI is wide and ~370 matches per arm are needed.",
