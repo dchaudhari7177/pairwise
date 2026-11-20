@@ -1,6 +1,9 @@
-import { AlertTriangle, CheckCircle2, FlaskConical, IndianRupee, MessagesSquare, ShieldAlert, Users } from "lucide-react";
+import { AlertTriangle, CheckCircle2, CircleDashed, FlaskConical, Flag, IndianRupee, MessagesSquare, ShieldAlert, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { DemoGuide } from "@/components/DemoGuide";
+import { EconomicsModel } from "@/components/EconomicsModel";
+import { netConsumer } from "@/lib/economics";
+import { nextCityGate, weekRetention, type GateVerdict } from "@/lib/gates";
 import { Avatar } from "@/components/Portrait";
 import { demoAccountFor } from "@/lib/demo-guide";
 import { requireAdmin } from "@/lib/server/viewer";
@@ -160,7 +163,7 @@ function RevenueMix({ plusMrr, plusMembers, venues }: { plusMrr: number; plusMem
   const rows = [
     { label: "Partner venues: listings", value: venues.listing, sub: `${venues.partners} venues × ₹3,000 a month, after a free first month` },
     { label: "Partner venues: redeemed dates", value: venues.perRedemption, sub: `${venues.redeemed30} perks redeemed × ₹50 (last 30 days)` },
-    { label: "Pairwise Plus", value: plusMrr, sub: `${plusMembers} members` },
+    { label: "Pairwise Plus", value: plusMrr, sub: `${plusMembers} members, net of GST and gateway fees` },
   ];
   const total = Math.max(1, rows.reduce((n, r) => n + r.value, 0));
   return (
@@ -218,6 +221,74 @@ function VenuePipeline({ apps }: { apps: VenueApplication[] }) {
         ))}
       </ul>
       {apps.length === 0 && <p className="mt-4 text-sm text-muted">No applications yet.</p>}
+    </div>
+  );
+}
+
+const GATE_STYLE: Record<GateVerdict, { box: string; label: string }> = {
+  go: { box: "bg-sage-soft text-sage", label: "Go" },
+  iterate: { box: "bg-amber-soft text-amber", label: "Iterate" },
+  stop: { box: "bg-rose-soft text-rose-2", label: "Stop" },
+  too_early: { box: "bg-paper-2 text-ink-2", label: "Too early" },
+};
+
+function GateCard({ gate, next }: { gate: ReturnType<typeof nextCityGate>; next: string }) {
+  const style = GATE_STYLE[gate.verdict];
+  return (
+    <div className="card p-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="eyebrow flex items-center gap-1.5">
+            <Flag className="h-3.5 w-3.5" /> Decision gate
+          </p>
+          <h2 className="mt-1 text-xl font-semibold">Should we open {next}?</h2>
+          <p className="mt-1 max-w-2xl text-sm text-ink-2">
+            A new city loses money until it&apos;s a few thousand members big (see the model below), so opening one is a capital decision. These
+            criteria and the kill lines were written down before the pilot, so we can&apos;t move the goalposts once we&apos;re attached.
+          </p>
+        </div>
+        <span className={`rounded-full px-3 py-1 text-sm font-semibold ${style.box}`}>{style.label}</span>
+      </div>
+      <p className={`mt-4 rounded-2xl px-4 py-3 text-sm font-medium ${style.box}`}>{gate.headline}</p>
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs text-muted">
+              <th className="py-2 pr-3 font-medium">Criterion</th>
+              <th className="py-2 pr-3 font-medium">Now</th>
+              <th className="py-2 pr-3 font-medium">Needs</th>
+              <th className="py-2 font-medium">If it fails, we…</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-line">
+            {gate.checks.map((c) => (
+              <tr key={c.id}>
+                <td className="py-2.5 pr-3">
+                  <span className="flex items-center gap-2">
+                    {c.status === "pass" ? (
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-sage" />
+                    ) : c.status === "fail" ? (
+                      <AlertTriangle className="h-4 w-4 shrink-0 text-amber" />
+                    ) : (
+                      <CircleDashed className="h-4 w-4 shrink-0 text-muted" />
+                    )}
+                    {c.label}
+                  </span>
+                </td>
+                <td className="whitespace-nowrap py-2.5 pr-3 font-semibold">{c.reading ?? "—"}</td>
+                <td className="whitespace-nowrap py-2.5 pr-3 text-ink-2">{c.target}</td>
+                <td className="py-2.5 text-xs text-ink-2">{c.lever}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-4 text-xs text-muted">
+        Kill lines, checked once the sample is trustworthy: women under 30% despite the waitlist, under 5% of conversations reaching a date, under 10% still
+        active in week 4, or over 50% of chats ghosted. Crossing one means no new city; we fix the pilot or test a &ldquo;new in the city&rdquo; friends mode on the same
+        verified base.
+        {gate.kills.length > 0 && <strong className="text-rose-2"> Crossed now: {gate.kills.join("; ")}.</strong>}
+      </p>
     </div>
   );
 }
@@ -288,6 +359,22 @@ export default async function AdminPage() {
   const resolved = reports.filter((r) => r.status === "resolved").slice(0, 5);
   const maxFunnel = Math.max(1, m.funnel[0].value);
   const demo = demoAccountFor(user.email);
+  const openCities = board.filter((c) => c.open);
+  const largest = openCities.reduce((a, c) => (c.active > (a?.active ?? -1) ? c : a), openCities[0]);
+  const market = openCities.reduce((n, c) => ({ women: n.women + c.women, gatedMen: n.gatedMen + c.gatedMen }), { women: 0, gatedMen: 0 });
+  const hyp = (id: string) => m.hypotheses.find((h) => h.id === id)?.value ?? null;
+  const gate = nextCityGate({
+    largestCityActive: largest?.active ?? 0,
+    womenShare: market.women + market.gatedMen ? (market.women / (market.women + market.gatedMen)) * 100 : null,
+    pickDecisionRate: hyp("H2"),
+    ghostRate: hyp("H3"),
+    dateRate: hyp("H6"),
+    week4Retention: weekRetention(m.cohorts, 4),
+    payingVenues: venues.partners,
+  });
+  const nextCity = board.find((c) => !c.open);
+  // Members see GST-inclusive prices; revenue is what's left after GST and the gateway.
+  const plusNet = Math.round(netConsumer(m.revenue.mrr));
 
   return (
     <div className="space-y-10">
@@ -316,8 +403,8 @@ export default async function AdminPage() {
         <Stat
           icon={IndianRupee}
           label="Monthly revenue"
-          value={`₹${(m.revenue.mrr + venues.total30).toLocaleString("en-IN")}`}
-          sub={`${Math.round((venues.total30 / Math.max(1, m.revenue.mrr + venues.total30)) * 100)}% from venues · ₹${m.revenue.mrr.toLocaleString("en-IN")} Plus MRR (${m.revenue.plusShare}% convert)`}
+          value={`₹${(plusNet + venues.total30).toLocaleString("en-IN")}`}
+          sub={`Net of GST · ${Math.round((venues.total30 / Math.max(1, plusNet + venues.total30)) * 100)}% from venues · ₹${plusNet.toLocaleString("en-IN")} Plus MRR (${m.revenue.plusShare}% convert)`}
         />
       </section>
 
@@ -349,8 +436,16 @@ export default async function AdminPage() {
       </section>
 
       <section id="revenue" className="scroll-mt-24 grid gap-6 lg:grid-cols-2">
-        <RevenueMix plusMrr={m.revenue.mrr} plusMembers={m.revenue.plusMembers} venues={venues} />
+        <RevenueMix plusMrr={plusNet} plusMembers={m.revenue.plusMembers} venues={venues} />
         <VenuePipeline apps={applications} />
+      </section>
+
+      <section id="gate" className="scroll-mt-24">
+        <GateCard gate={gate} next={nextCity?.label ?? "the next city"} />
+      </section>
+
+      <section id="economics" className="scroll-mt-24">
+        <EconomicsModel compact />
       </section>
 
       {/* Hypotheses */}
