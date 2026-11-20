@@ -47,7 +47,7 @@ sponsored puzzles), not from users' pockets.
 | `meera@pairwise.demo` | The inbound cap (10 likes now, 2 queued), Scam Shield catching a scam, close-kindly |
 | `kabir@pairwise.demo` | Plus member: 10 picks, 5 slots, Relocation mode |
 | `vivek@pairwise.demo` | **Waitlisted** in Hyderabad by the gender-balance rule; Aarav's vouch code `AARAV-7K2P` lets him in |
-| `admin@pairwise.demo` | Founder console: north-star metric, funnel, city launch control, revenue mix, a live A/B test, **real user-research answers**, retention cohorts, moderation queue |
+| `admin@pairwise.demo` | Founder console: north-star metric, funnel, city launch control, revenue mix, the next-city go/no-go gate, an interactive city P&L, a live A/B test, **real user-research answers**, retention cohorts, moderation queue |
 | [Partner counter](https://pairwise-pi.vercel.app/partners/redeem) | A venue redeems tonight's perk code: Dice & Deck, PIN `4321`, code `PW-7Q4M2K` |
 
 Or sign up fresh: verification uses a clearly labelled simulated eLitmus
@@ -68,6 +68,7 @@ deep links, one-click story switching, and a button that restores the demo.
 | Launching to an empty or lopsided room | **City launch gate**: a city opens at 1,500 verified members; men seeking women wait in a first-come line whenever women would drop below 40% · **3 vouches** per member are the only shortcut |
 | "Users don't want to pay" | **Partner venues pay, members don't**: a listing plus ₹50 per redeemed first date, tracked with a one-time perk code entered at the venue counter ([For venues](https://pairwise-pi.vercel.app/partners)) |
 | Gut-feel product decisions | A **randomised experiment** in the founder console (hash-assigned arms, confidence intervals, p-value, required sample size) instead of trusting a biased correlation · a **2-minute anonymous survey** ([/research](https://pairwise-pi.vercel.app/research)) that checks each hypothesis with real people, split by gender |
+| Revenue without costs | A tested **unit-economics model**, net of GST and payment fees: a mature city contributes ~₹3.7L a month, the company breaks even at two cities (seven in the conservative case). Interactive at [/why#model](https://pairwise-pi.vercel.app/why#model) · a **go / iterate / stop gate** with kill lines written down before the data decides when the next city opens |
 | Paywalled basics | Seeing **who liked you is free**. Plus sells convenience, never safety or visibility |
 | Caste-sorted matrimony | Values and life-plan matching; **no caste filters, by principle** |
 
@@ -90,7 +91,7 @@ Every decision, with its trade-off, is in the [founder's notes](docs/PRODUCT.md)
 - **Firestore** (pilot in `nam5`; launch target `asia-south1`, Mumbai) through a tiny `DocStore` interface; an
   **in-memory store** for tests and zero-setup local runs
 - **Zod** validation, **jose** JWT sessions, **scrypt** password hashing
-- **Vitest**: 166 tests over the matching engine, Scam Shield, Spark (every
+- **Vitest**: 184 tests over the matching engine, Scam Shield, Spark (every
   puzzle brute-forced for a unique answer) and all services
 - **Vercel** (functions in `iad1`, next to the database) with a nightly cron that resets the demo scenario
 
@@ -116,7 +117,7 @@ Requires Node 20.9+.
 ```bash
 npm install
 npm run dev        # http://localhost:3000, auto-seeds the demo scenario, no setup needed
-npm test           # 166 tests
+npm test           # 184 tests
 npm run lint && npm run typecheck && npm run build
 ```
 
