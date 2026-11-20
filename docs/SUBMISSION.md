@@ -26,13 +26,16 @@ PHASE 1 · Pune and Hyderabad, then Chennai and NCR (months 2–6)
 PHASE 2 · Beyond eLitmus (months 6–12)
 • Open to any verified professional (work email, already built, plus DigiLocker documents with consent).
 • Native apps through a Capacitor wrapper once PWA retention is proven; Hindi and regional languages.
-• Paid acquisition only when CAC is below 6 months of revenue per member.
+• Paid acquisition only when CAC is below 6 months of contribution per member.
 
 PHASE 3 · Year 2
 • A "New in the city" friends mode on the same verified, safe base; an events marketplace; couples' success stories driving referrals.
 
 HOW THE PRODUCT EVOLVES
 Our north star is Weekly Meaningful Conversations (both people send 8+ messages), not time spent in the app. The founder console in the app tracks five hypotheses live (pick decision rate, ghost rate, Spark vs no-Spark conversation depth, the gender gap in time to first match, and chats that become dates), each tied to a product lever. For example, if men's time to first match drifts far from women's, we tighten the waitlist and attention balancing.
+
+EACH NEW CITY PASSES A GATE FIRST
+A new city loses money until it has about 4,300 verified members (my unit-economics model), so opening one is a capital decision. Before the next city opens, the pilot must show: at least 1,500 active members (below that, readings are noise), women at 40% or more, at least 40% of picks decided, ghosting at or under 25%, 15% of conversations reaching a date, 25% still active in week 4, and at least 10 venues paying after their free month. Kill lines were written down in advance: women under 30%, dates under 5%, week-4 activity under 10%, or ghosting over 50%. Crossing any of them means no new city, and we either fix the pilot or test a "new in the city" friends mode on the same verified base. The founder console runs this gate live. Today it honestly says "too early", because the demo seed is not 1,500 people.
 
 SCALING
 Picks become a nightly job per city, chat moves to realtime listeners, and analytics moves to BigQuery. Trust & safety grows from rules plus a small moderation team to a classifier trained on resolved reports. Firestore and Vercel scale without re-platforming.
@@ -41,9 +44,9 @@ Picks become a nightly job per city, chat moves to realtime listeners, and analy
 
 ## 2. How do you plan on monetising the app?
 
-IN SHORT: Businesses pay, members mostly don't. Partner venues pay a listing fee plus ₹50 per redeemed first date (tracked with a one-time perk code, live in the app). Plus (₹299/month) sells convenience, never safety or visibility. About three-quarters of projected revenue comes from businesses, and seeing who liked you stays free.
+IN SHORT: Businesses pay, members mostly don't. Partner venues pay a listing fee plus ₹50 per redeemed first date (tracked with a one-time perk code, live in the app). Plus (₹299/month) sells convenience, never safety or visibility. About two-thirds of projected revenue comes from businesses, and seeing who liked you stays free. I've modelled costs too: a mature city contributes about ₹3.7L a month after its own costs, and the company breaks even at two cities (seven in the conservative case).
 
-My answer to "users don't want to pay" is: mostly, they won't have to. About three-quarters of projected revenue comes from businesses that want access to a verified, high-intent audience that actually goes on dates.
+My answer to "users don't want to pay" is: mostly, they won't have to. About two-thirds of projected revenue comes from businesses that want access to a verified, high-intent audience that actually goes on dates.
 
 WHAT STAYS FREE, FOREVER
 Verification, every safety tool, 5 Daily Picks, seeing who liked you (the most common paywall in dating), 3 conversations, unlimited Spark puzzles, Date Plan and partner perks. We never sell visibility (no boosts or super-likes, which would undo our fair-attention design), never price by gender, and never sell or ad-target personal data.
@@ -56,11 +59,18 @@ WHERE THE MONEY COMES FROM
 5. Later: "Verified with Pairwise" identity as a service for rental and flatmate platforms, with user consent.
 
 ILLUSTRATIVE ECONOMICS, ONE MATURE CITY (30k verified, 15k monthly active, a conservative 4% on Plus)
-• Plus: 600 × ~₹260 = ₹1.56L/month (26%)
-• Venues: 60 × ₹3,000 + 2,000 redemptions × ₹50 = ₹2.8L (47%)
-• Events: 8 × 40 × ₹399 at 50% margin = ₹0.64L (11%)
-• Sponsored Sparks: ₹1L (17%)
-Total ≈ ₹6L a month, ≈ ₹72L a year per city, ≈ ₹3.6 crore a year across five cities. CAC for the founding cohort is near zero, and infrastructure costs are small at this scale.
+Member prices include 18% GST and the gateway takes ~2%, so ₹299 is ₹248 of revenue. All figures are net, computed by tested code and interactive at pairwise-pi.vercel.app/why#model, where you can change the assumptions yourself.
+• Plus: 600 × ~₹226 blended net = ₹1.36L a month (24%)
+• Venues: 60 × ₹3,000 listings + ~2,000 redeemed dates × ₹50 = ₹2.8L (49%)
+• Puzzle Nights: 8 × 40 tickets, our 50% share = ₹0.53L (9%)
+• Sponsored Sparks: ₹1L (18%)
+Revenue ≈ ₹5.7L a month. City costs ≈ ₹2.0L (a city lead, two moderators, infrastructure, local marketing). Contribution ≈ ₹3.7L a month (65%).
+
+WHAT IT COSTS AND WHEN IT PAYS
+• A central team (founder/PM, two engineers, a trust & safety lead, legal and accounting retainers) costs about ₹6L a month, so the company breaks even at two mature cities. Five cities come to about ₹3.4 crore revenue and ₹1.5 crore operating profit a year.
+• A new city only covers its own costs from about 4,300 verified members. A city opened at the 1,500 launch line is an investment for a while, so cities open one at a time.
+• In the conservative case (20k verified, 40% active, 2.5% on Plus, 35 venues) it takes seven cities, and five would lose about ₹14 lakh a year. That's exactly what the go/no-go gate (below, and in the founder console) is there to catch before we spend.
+• CAC for the founding cohort is near zero. Paid acquisition starts only when CAC is under six months of contribution per member.
 
 So the monetised part of the app is the Date Plan surface (venues, perks, events) plus convenience features in Plus. That puts revenue at the step where members most need help (getting from chat to a safe first date), so our incentives line up with theirs.
 
@@ -101,6 +111,7 @@ KEY ASSUMPTIONS (and how the pilot tests them)
 • 5 picks a day feels considered, not limiting: at least 40% of picks get a decision (H2).
 • Slots and expiry cut ghosting below 25% (H3).
 • Spark chats go deeper than non-Spark chats (H4). Measured with a randomised experiment, not a correlation: half of new matches get a Spark suggestion, assigned by a hash of the match id, and the founder console reports the lift with a confidence interval, a p-value and the sample size still needed. Pilot data isn't enough yet, and the console says so.
+• The business works only if a city reaches about 4,300 verified members and 10+ venues pay. If those fail, the plan changes before a second city opens (the go/no-go gate in Q1).
 • Attention balancing narrows the gender gap in time to first match (H5).
 • Safety features lead to dates: at least 15% of conversations reach a plan (H6).
 • Venues will pay for verified couple footfall. We start with a free first month, then charge; redeemed perk codes are the proof of value we show them.
