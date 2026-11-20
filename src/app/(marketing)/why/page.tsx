@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { EconomicsModel } from "@/components/EconomicsModel";
 
 export const metadata: Metadata = {
   title: "Founder's notes",
@@ -72,7 +73,7 @@ export default function WhyPage() {
           {[
             ["Thesis", "Verification is the moat; fairness is the product; safety is the brand."],
             ["North star", "Weekly Meaningful Conversations: both people send 8+ messages."],
-            ["Money", "About three-quarters of projected revenue comes from businesses, not users' pockets."],
+            ["Money", "About two-thirds of projected revenue comes from businesses, not users' pockets."],
           ].map(([k, v]) => (
             <div key={k} className="rounded-2xl bg-paper-2/70 p-4">
               <p className="eyebrow">{k}</p>
@@ -271,35 +272,21 @@ export default function WhyPage() {
               <li><strong>Events.</strong> Puzzle Nights at about ₹399 a ticket, profit-shared with the venue.</li>
               <li><strong>Sponsored Sparks.</strong> Brands (coffee, travel, books) sponsor puzzle packs. These are contextual, with no targeting on personal data.</li>
             </ol>
-            <div className="card my-6 overflow-hidden">
-              <p className="px-5 pt-5 font-semibold">Illustrative monthly revenue: one mature city</p>
-              <p className="px-5 text-xs text-muted">Assumptions: 30,000 verified members, 15,000 monthly active, 4% Plus conversion.</p>
-              <table className="mt-3 w-full text-sm">
-                <tbody className="divide-y divide-line">
-                  {[
-                    ["Plus: 600 subscribers × ~₹260 blended", "₹1,56,000", "26%"],
-                    ["Venues: 60 × ₹3,000 + 2,000 redemptions × ₹50", "₹2,80,000", "47%"],
-                    ["Events: 8 × 40 × ₹399, 50% margin", "₹63,840", "11%"],
-                    ["Sponsored Sparks: 1 brand", "₹1,00,000", "17%"],
-                  ].map(([a, b, c]) => (
-                    <tr key={a}>
-                      <td className="px-5 py-2.5 text-ink-2">{a}</td>
-                      <td className="px-5 py-2.5 text-right font-semibold">{b}</td>
-                      <td className="px-5 py-2.5 text-right text-muted">{c}</td>
-                    </tr>
-                  ))}
-                  <tr className="bg-paper-2/70">
-                    <td className="px-5 py-2.5 font-semibold">Total</td>
-                    <td className="px-5 py-2.5 text-right font-semibold">≈ ₹6,00,000</td>
-                    <td className="px-5 py-2.5 text-right text-muted">~₹72L/yr</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div id="model" className="my-6 scroll-mt-24">
+              <EconomicsModel />
             </div>
             <p>
-              Five mature cities come to about <strong>₹3.6 crore a year</strong>, with roughly three-quarters from businesses. For
-              eLitmus, it&apos;s a new revenue line from an existing asset, at near-zero acquisition cost for the founding cohort, and it
-              never touches hiring data.
+              <strong>The base case, net of GST and payment fees:</strong> a mature city (30,000 verified, 15,000 active a month, 4% on
+              Plus) brings in about <strong>₹5.7L a month</strong>, costs about ₹2.0L to run (a city lead, moderators, infrastructure,
+              local marketing) and contributes about <strong>₹3.7L</strong>. Two-thirds of that revenue is paid by businesses. With a
+              ₹6L-a-month central team, the company breaks even at <strong>two mature cities</strong>, and five come to about ₹3.4 crore of
+              revenue and ₹1.5 crore of operating profit a year.
+            </p>
+            <p>
+              <strong>The honest part:</strong> in the conservative case it takes seven cities, and a newly opened city loses money until it
+              reaches about 4,300 verified members. So opening cities is a capital decision, not a marketing one, and it&apos;s gated by the
+              go/no-go criteria under <a href="#risks">Risks</a>. For eLitmus, it&apos;s a new revenue line from an existing asset, at
+              near-zero acquisition cost for the founding cohort, and it never touches hiring data.
             </p>
           </Section>
 
