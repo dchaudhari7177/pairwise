@@ -51,24 +51,39 @@ The venue line works end to end, not just on paper:
 
 ## Unit economics (illustrative, one mature city)
 
-Assumptions: 30,000 verified members, 15,000 monthly active, 4% of MAU on
-Plus (deliberately conservative), blended Plus price about ₹260/month.
+Computed by `src/lib/economics.ts` and pinned by `tests/economics.test.ts`, so
+if an assumption changes, the test fails until this page changes too. The same
+model is interactive at `/why#model` and in the founder console.
+
+Assumptions (base case): 30,000 verified members, 15,000 monthly active, 4% of
+actives on Plus, 60% of them monthly. **Member prices include 18% GST**, and the
+gateway takes ~2%, so ₹299 is ₹248 of revenue and the blended Plus figure is
+~₹226 per member per month. B2B invoices add GST on top, so venue and sponsor
+fees are revenue at face value.
 
 | Line | Calculation | Monthly | Share |
 |---|---|---:|---:|
-| Plus | 600 × ₹260 | ₹1,56,000 | 26% |
-| Venues | 60 × ₹3,000 + 2,000 redemptions × ₹50 | ₹2,80,000 | 47% |
-| Events | 8 events × 40 × ₹399 × 50% margin | ₹63,840 | 11% |
-| Sponsored Sparks | 1 brand | ₹1,00,000 | 17% |
-| **Total** | | **≈ ₹6,00,000** | |
+| Plus | 600 × ~₹226 net | ₹1,36,000 | 24% |
+| Venue listings | 60 × ₹3,000 | ₹1,80,000 | 32% |
+| Redeemed perk dates | ~2,000 × ₹50 | ₹1,00,000 | 18% |
+| Puzzle Nights | 8 × 40 × ₹338 net × 50% to us | ₹53,000 | 9% |
+| Sponsored Sparks | 1 brand | ₹1,00,000 | 18% |
+| **Revenue** | | **≈ ₹5,70,000** | |
+| City costs | city lead ₹45k, 2 moderators ₹70k, infra ₹3/active, marketing ₹40k | −₹2,00,000 | |
+| **Contribution** | | **≈ ₹3,70,000** (65%) | |
 
-- About **₹72 lakh a year per mature city**, or about **₹3.6 crore a year
-  across five cities**, with about three-quarters from businesses.
-- **Costs at this scale** are dominated by people (moderation, partnerships),
-  not infrastructure: Firestore and Vercel cost tens of thousands of rupees a
-  month at this volume.
+- **Two-thirds of revenue is paid by businesses** (venues and sponsors), not members.
+- **Company break-even:** a ₹6L/month central team (founder/PM, two engineers, a
+  T&S lead, legal and accounting retainers) is covered by **two mature cities**.
+  Five cities: about ₹3.4 crore revenue and ₹1.5 crore operating profit a year.
+- **A new city is an investment.** It covers its own costs only from about
+  **4,300 verified members**, so a city opened at the 1,500 launch line loses
+  money for a while. That's why cities open one at a time.
+- **The conservative case** (20k verified, 40% active, 2.5% Plus, 35 venues) needs
+  **seven** cities to break even, and five cities lose about ₹14 lakh a year. That's
+  the scenario the go/no-go gate exists to catch early.
 - **CAC** for the founding cohort is close to zero (owned eLitmus channels).
-  Phase 2 paid acquisition is gated on CAC < 6 months of blended revenue.
+  Phase 2 paid acquisition is gated on CAC < 6 months of contribution per member.
 
 ## Why this works for eLitmus
 
